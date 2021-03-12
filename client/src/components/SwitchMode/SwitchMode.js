@@ -22,7 +22,6 @@ const SwitchMode = () => {
     }
 
     if (modeSwitch === true) {
-
         let data = {
             mode: chosenMode,
             code: {
@@ -33,11 +32,17 @@ const SwitchMode = () => {
             }
         }
 
-        console.log(data)
-
         axios.post('http://localhost:5000/enable-detection', data)
-             .then(res => console.log(res))
+                .then(res => console.log(res))
     }
+
+
+    // not working :( don't try at home
+    // if (modeSwitch === false) {
+    //     console.log(modeSwitch)
+    //     axios.delete('http://localhost:5000/disable-detection')
+    //         .then(() => console.log('Successfully deleted process'))
+    // }
 
     return (
         <div className={styles.switchMode}>
@@ -52,4 +57,4 @@ const SwitchMode = () => {
     )
 }
 
-export default SwitchMode
+export default SwitchMode;
