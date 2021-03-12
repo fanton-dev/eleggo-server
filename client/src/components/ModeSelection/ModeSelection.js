@@ -49,13 +49,12 @@ const ModeSelection = () => {
     }
 
     return (
-        <>
+        <div className={styles.modeSelection} >
             <FormGroup>
                 <FormControlLabel
                     className={classes.selectControl}
                     control={<CustomSwitch checked={modeSwitch} onChange={handleModeSwitch} name="modeSwitch" />}
                     label={modeSwitch === true ? 'Enabled' : 'Disabled'}
-                    labelPlacement='bottom'
                 >
                 </FormControlLabel>
             </FormGroup>
@@ -77,7 +76,7 @@ const ModeSelection = () => {
                     }
                 </Select>
             </FormControl>
-        </>
+        </div>
     )
 }
 
