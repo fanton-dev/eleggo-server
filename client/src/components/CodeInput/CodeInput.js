@@ -14,12 +14,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TabPanel = ({ children, value, index }) => {
+const TabPanel = ({ children, value, index, leftCallback, noneCallback, rightCallback, prereqCallback }) => {
+
+  const [code, setCode] = useState('');
+
+  const handleCodeChange = (event) => { 
+
+    setCode(event.target.value);
+
+    if (value === 0) {
+      leftCallback(event.target.value);
+    } else {
+      if (value === 1) {
+        noneCallback(event.target.value);
+      } else {
+        if (value === 2) {
+          rightCallback(event.target.value);
+        } else {
+          if (value === 3) {
+            prereqCallback(event.target.value);
+          }
+        }
+      }
+    }
+  }
+
   return (
     <div>
       {
-        value === index ? 
-          <textarea placeholder='Some code goes brrr...' className={styles.code}>
+        value === index ?   
+          <textarea placeholder='Some code goes brrr...' className={styles.code} value={code} onChange={handleCodeChange}>
           </textarea>
         : ''
       }
@@ -27,9 +51,10 @@ const TabPanel = ({ children, value, index }) => {
   )
 }
 
-const CodeInput = () => {
+const CodeInput = ({ leftCallback, noneCallback, rightCallback, prereqCallback }) => {
   const classes = useStyles();
   const [selectedTab, setSelectedTab] = useState(0);
+  const indexes = [0, 1, 2, 3];
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -43,10 +68,18 @@ const CodeInput = () => {
           <Tab label="Right" />
           <Tab label="Prerequisite" />
       </Tabs>
-      <TabPanel value={selectedTab} index={0}></TabPanel>
-      <TabPanel value={selectedTab} index={1}></TabPanel>
-      <TabPanel value={selectedTab} index={2}></TabPanel>
-      <TabPanel value={selectedTab} index={3}></TabPanel>
+      {
+        indexes.map(index => {
+          return (
+            <TabPanel key={index} value={selectedTab} index={index}
+                      leftCallback={(code) => leftCallback(code)}
+                      noneCallback={(code) => noneCallback(code)}
+                      rightCallback={(code) => rightCallback(code)}
+                      prereqCallback={(code) => prereqCallback(code)}          
+            ></TabPanel>
+          )
+        })
+      }
     </div>
   )
 }

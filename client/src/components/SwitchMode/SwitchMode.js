@@ -8,6 +8,10 @@ const SwitchMode = () => {
 
     const [modeSwitch, setModeSwitch] = useState(false);
     const [chosenMode, setChosenMode] = useState('');
+    const [left, setLeft] = useState('');
+    const [right, setRight] = useState('');
+    const [none, setNone] = useState('');
+    const [prerequisite, setPrerequisite] = useState('');
 
     const checkSwitchMode = (switchValue) => {
         setModeSwitch(switchValue)
@@ -21,7 +25,15 @@ const SwitchMode = () => {
 
         let data = {
             mode: chosenMode,
+            code: {
+                left,
+                right,
+                none,
+                prerequisite
+            }
         }
+
+        console.log(data)
 
         axios.post('http://localhost:5000/enable-detection', data)
              .then(res => console.log(res))
@@ -30,7 +42,12 @@ const SwitchMode = () => {
     return (
         <div className={styles.switchMode}>
             <ModeSelection switchModeCallback={checkSwitchMode} chosenModeCallback={setMode} />  
-            <CodeInput className={styles.codeInput} /> 
+            <CodeInput className={styles.codeInput} 
+                       leftCallback={(code) => setLeft(code)}
+                       noneCallback={(code) => setNone(code)}
+                       rightCallback={(code) => setRight(code)}
+                       prereqCallback={(code) => setPrerequisite(code)}
+            /> 
         </div>
     )
 }
