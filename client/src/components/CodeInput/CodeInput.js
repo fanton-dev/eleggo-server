@@ -43,7 +43,7 @@ const TabPanel = ({ children, value, index, leftCallback, noneCallback, rightCal
     <div>
       {
         value === index ?   
-          <textarea placeholder='Some code goes brrr...' className={styles.code} value={code} onChange={handleCodeChange}>
+          <textarea placeholder='//Type your code here...' className={styles.code} value={code} onChange={handleCodeChange}>
           </textarea>
         : ''
       }
