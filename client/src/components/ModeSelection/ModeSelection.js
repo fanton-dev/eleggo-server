@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-const ModeSelection = () => {
+const ModeSelection = ({ switchModeCallback, chosenModeCallback }) => {
 
     const classes = useStyles();
     const modes = ['Hand Movement', 'Thought of direction']
@@ -42,10 +42,12 @@ const ModeSelection = () => {
 
     const handleModeSwitch = (event) => {
         setModeSwitch(event.target.checked)
+        switchModeCallback(event.target.checked)
     }
 
     const handleModeSelect = (event) => {
         setMode(event.target.value);
+        chosenModeCallback(event.target.value)
     }
 
     return (
