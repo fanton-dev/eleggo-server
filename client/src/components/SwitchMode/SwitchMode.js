@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import CodeInput from '../CodeInput/CodeInput'
 import ModeSelection from '../ModeSelection/ModeSelection'
 import styles from './SwitchMode.module.css';
@@ -21,28 +21,30 @@ const SwitchMode = () => {
         setChosenMode(mode);
     }
 
-    if (modeSwitch === true) {
-        let data = {
-            mode: chosenMode,
-            code: {
-                left,
-                right,
-                none,
-                prerequisite
+    useEffect(() => {
+        if (modeSwitch) {
+            let data = {
+                mode: chosenMode,
+                code: {
+                    left,
+                    right,
+                    none,
+                    prerequisite
+                }
             }
+
+            axios.post('http://localhost:5000/enable-detection', data)
+                    .then(res => console.log(res));
         }
+    
+    }, [modeSwitch, left, right, none, prerequisite, chosenMode])
 
-        axios.post('http://localhost:5000/enable-detection', data)
-                .then(res => console.log(res))
-    }
-
-
-    // not working :( don't try at home
-    // if (modeSwitch === false) {
-    //     console.log(modeSwitch)
-    //     axios.delete('http://localhost:5000/disable-detection')
-    //         .then(() => console.log('Successfully deleted process'))
-    // }
+    useEffect(() => {
+        if (modeSwitch === false) {
+            axios.delete('http://localhost:5000/disable-detection');
+        }
+        
+    }, [modeSwitch])
 
     return (
         <div className={styles.switchMode}>
