@@ -16,8 +16,9 @@ app.post('/enable-detection', (req, res) => {
     spawn('python', [`${mode}.py\', ${left}, ${none}, ${right}, ${prerequisite}`]);
 })
 
-// app.delete('/disable-detection', (req, res) => {
-//     console.log('delete process')
-// })
+app.delete('/disable-detection', (req, res) => {
+    // kill process here
+    console.log('kill process')
+})
 
 app.listen(PORT, () => console.log(`Server is live on ${PORT}`));
