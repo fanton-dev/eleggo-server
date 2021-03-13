@@ -22,20 +22,20 @@ const SwitchMode = () => {
     }
 
     useEffect(() => {
-    if (modeSwitch) {
-        let data = {
-            mode: chosenMode,
-            code: {
-                left,
-                right,
-                none,
-                prerequisite
+        if (modeSwitch) {
+            let data = {
+                mode: chosenMode,
+                code: {
+                    left,
+                    right,
+                    none,
+                    prerequisite
+                }
             }
-        }
 
-        axios.post('http://localhost:5000/enable-detection', data)
-                .then(res => console.log(res));
-    }
+            axios.post('http://localhost:5000/enable-detection', data)
+                    .then(res => console.log(res));
+        }
     
     }, [modeSwitch, left, right, none, prerequisite, chosenMode])
 
