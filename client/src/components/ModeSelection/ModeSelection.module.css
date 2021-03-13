@@ -1,4 +1,6 @@
-/* .modeSelection { */
-/* display: flex; */
-/* border: 1px solid black; */
-/* } */
+.modeSelection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 10px;
+}

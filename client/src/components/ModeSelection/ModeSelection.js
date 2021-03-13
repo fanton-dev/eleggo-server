@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
       minWidth: 120,
     },
     selectControl: {
-        float: 'right'
+        paddingLeft: '8px'
     }
   }));
 
@@ -54,6 +54,7 @@ const ModeSelection = ({ switchModeCallback, chosenModeCallback }) => {
         <div className={styles.modeSelection} >
             <FormGroup>
                 <FormControlLabel
+                    style={{minWidth: 190}}
                     className={classes.selectControl}
                     control={<CustomSwitch checked={modeSwitch} onChange={handleModeSwitch} name="modeSwitch" />}
                     label={modeSwitch === true ? 'Enabled' : 'Disabled'}

@@ -48,7 +48,7 @@ const SwitchMode = () => {
 
     return (
         <div className={styles.switchMode}>
-            <ModeSelection switchModeCallback={checkSwitchMode} chosenModeCallback={setMode} />  
+            <ModeSelection switchModeCallback={checkSwitchMode} chosenModeCallback={setMode} className={styles.switch} />  
             <CodeInput className={styles.codeInput} 
                        leftCallback={(code) => setLeft(code)}
                        noneCallback={(code) => setNone(code)}
