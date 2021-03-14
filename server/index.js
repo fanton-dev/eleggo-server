@@ -26,9 +26,9 @@ let startedProcess;
 
 app.post('/enable-detection', (req, res) => {
     console.log(req.body)
-    const { mode, code: {left, none, right, prerequisite} } = req.body;
-
-    startedProcess = spawn('python', [`${mode}.py\', ${left}, ${none}, ${right}, ${prerequisite}`]);
+    let { mode, code: {left, none, right, prerequisite} } = req.body;
+    mode = mode.toLowerCase().replace(' ', '-');
+    startedProcess = spawn('python', [`scripts/${mode}.py\', ${left}, ${none}, ${right}, ${prerequisite}`]);
 })
 
 app.delete('/disable-detection', (req, res) => {
