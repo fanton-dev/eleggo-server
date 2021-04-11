@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { spawn } = require('child_process');
+const { execFile } = require('child_process');
 const getData = require('./utils/getData')
 
 const app = express();
@@ -25,10 +25,22 @@ io.on('connection', (socket) => {
 let startedProcess;
 
 app.post('/enable-detection', (req, res) => {
-    console.log(req.body)
-    let { mode, code: {left, none, right, prerequisite} } = req.body;
-    mode = mode.toLowerCase().replace(' ', '-');
-    startedProcess = spawn('python', [`scripts/${mode}.py\', ${left}, ${none}, ${right}, ${prerequisite}`]);
+  let { mode, code: {left, none, right, prerequisite} } = req.body;
+  mode = mode.toLowerCase().replace(/\s/g, '-');
+  console.log(mode)
+
+  startedProcess = execFile(
+    'python',
+    [`scripts/${mode}.py`, left, none, right, prerequisite],
+  );
+
+  startedProcess.stderr.on('data', function(data) {
+    console.log(data.toString()); 
+  });
+
+  startedProcess.stdout.on('data', function(data) {
+    console.log(data.toString()); 
+  });
 })
 
 app.delete('/disable-detection', (req, res) => {
