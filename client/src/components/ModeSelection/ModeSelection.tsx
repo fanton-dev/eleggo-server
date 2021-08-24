@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Switch, FormGroup, FormControlLabel } from "@material-ui/core";
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-const ModeSelection = ({ switchModeCallback, chosenModeCallback }) => {
+const ModeSelection: FC<any> = ({ switchModeCallback, chosenModeCallback }) => {
 
     const classes = useStyles();
     const modes = ['Hand Movement', 'Thought of direction']
@@ -58,8 +58,7 @@ const ModeSelection = ({ switchModeCallback, chosenModeCallback }) => {
                     className={classes.selectControl}
                     control={<CustomSwitch checked={modeSwitch} onChange={handleModeSwitch} name="modeSwitch" />}
                     label={modeSwitch === true ? 'Enabled' : 'Disabled'}
-                >
-                </FormControlLabel>
+                />
             </FormGroup>
 
             <FormControl className={classNames(classes.formControl, styles.select)}>
