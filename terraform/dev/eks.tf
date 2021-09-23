@@ -9,13 +9,13 @@ data "aws_eks_cluster_auth" "eks" {
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_version = "1.21"
-  cluster_name    = "eleggo-dev-cluster"
+  cluster_name    = local.cluster_name
   vpc_id          = module.vpc.vpc_id
-  subnets         = module.vpc.subnets
+  subnets         = concat(module.vpc.public_subnets, module.vpc.private_subnets)
 
   node_groups = {
     public = {
-      name                          = "eleggo-dev-cluster-worker-group-public"
+      name                          = "${local.cluster_name}-worker-group-public"
       instance_type                 = "t2.micro"
       desired_capacity              = 1
       min_capacity                  = 1
@@ -24,7 +24,7 @@ module "eks" {
     }
 
     private = {
-      name                          = "eleggo-dev-cluster-worker-group-private"
+      name                          = "${local.cluster_name}-worker-group-private"
       instance_type                 = "t2.micro"
       desired_capacity              = 1
       min_capacity                  = 1
