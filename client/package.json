@@ -32,16 +32,23 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
     "@types/classnames": "^2.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
     "electron": "^13.1.9",
-    "electron-builder": "^22.11.7"
+    "electron-builder": "^22.11.7",
+    "eslint": "^7.32.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-react": "^7.24.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-start": "concurrently 'BROWSER=none npm start' 'wait-on http://localhost:3000 && electron .'",
-    "electron-build": "npm run build ; npx electron-builder -mwl -c.extraMetadata.main=./build/electron.js"
+    "lint": "eslint './src/**/*.{js,ts,jsx,tsx}'",
+    "lint:fix": "eslint --fix './src/**/*.{js,ts,jsx,tsx}'",
+    "start:electron": "concurrently 'BROWSER=none npm start' 'wait-on http://localhost:3000 && electron .'",
+    "build:electron": "npm run build ; npx electron-builder -mwl -c.extraMetadata.main=./build/electron.js"
   },
   "build": {
     "appId": "com.fanton.eleggo",

@@ -11,6 +11,6 @@ const App = () => {
       <SwitchMode />
     </div>
   );
-}
+};
 
 export default App;
