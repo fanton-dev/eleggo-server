@@ -25,5 +25,5 @@ output "config_map_aws_auth" {
 
 output "cluster_name" {
   description = "Kubernetes Cluster Name"
-  value       = local.kubernetes_cluster_name
+  value       = local.eks_cluster_name
 }

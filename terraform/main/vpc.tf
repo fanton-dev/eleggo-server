@@ -13,16 +13,16 @@ module "vpc" {
   tags = {
     Terraform                                                = "true"
     Environment                                              = "main",
-    "kubernetes.io/cluster/${local.kubernetes_cluster_name}" = "shared"
+    "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
   }
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.kubernetes_cluster_name}" = "shared"
+    "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
     "kubernetes.io/role/elb"                                 = "1"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.kubernetes_cluster_name}" = "shared"
+    "kubernetes.io/cluster/${local.eks_cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"                        = "1"
   }
 }
