@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TabPanel = ({ children, value, index, leftCallback, noneCallback, rightCallback, prereqCallback }) => {
+const TabPanel = ({ value, index, leftCallback, noneCallback, rightCallback, prereqCallback }) => {
 
   const [code, setCode] = useState('');
 
@@ -51,7 +51,7 @@ const TabPanel = ({ children, value, index, leftCallback, noneCallback, rightCal
   )
 }
 
-const CodeInput = ({ leftCallback, noneCallback, rightCallback, prereqCallback }) => {
+const CodeInput: FC<any> = ({ leftCallback, noneCallback, rightCallback, prereqCallback }) => {
   const classes = useStyles();
   const [selectedTab, setSelectedTab] = useState(0);
   const indexes = [0, 1, 2, 3];

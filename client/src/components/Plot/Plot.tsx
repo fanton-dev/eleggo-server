@@ -1,17 +1,17 @@
 import React from 'react'
 import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis } from "recharts";
-import io from 'socket.io-client'
+import { io } from 'socket.io-client'
 import styles from './Plot.module.css';
 
 const socket = io('http://localhost:5000')
 
 const Plot = () => {
-  const [data, setData] = useState([])
+  const [data, setData] = useState<any[]>([])
 
   useEffect(() => {
-    socket.on("eeg", response => {
-      setData(currentData => [...currentData, response]);
+    socket.on("eeg", (receivedData) => {
+      setData((currentData) => [...currentData, receivedData]);
     })
   }, []);
 
