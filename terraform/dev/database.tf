@@ -3,12 +3,14 @@ module "database" {
 
   identifier = local.database_name
 
-  engine            = "postgres"
-  engine_version    = "13.3-R1"
-  instance_class    = "db.t2.micro"
-  allocated_storage = 5
+  engine               = "postgres"
+  engine_version       = "12.7"
+  instance_class       = "db.t2.micro"
+  allocated_storage    = 20
+  family               = "postgres12"
+  major_engine_version = "12"
 
-  name     = local.database_name
+  name     = "eleggo"
   username = var.database_username
   password = var.database_password
   port     = "5432"
@@ -28,7 +30,7 @@ module "database" {
   deletion_protection    = false
 
   tags = {
-    Environment = "dev"
+    Environment = "main"
   }
 
   depends_on = [

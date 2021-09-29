@@ -3,20 +3,22 @@ module "database" {
 
   identifier = local.database_name
 
-  engine            = "postgres"
-  engine_version    = "13.3-R1"
-  instance_class    = "db.t2.micro"
-  allocated_storage = 5
+  engine               = "postgres"
+  engine_version       = "12.7"
+  instance_class       = "db.t2.micro"
+  allocated_storage    = 20
+  family               = "postgres12"
+  major_engine_version = "12"
 
-  name     = local.database_name
+  name     = "eleggo"
   username = var.database_username
   password = var.database_password
   port     = "5432"
 
   iam_database_authentication_enabled = true
   vpc_security_group_ids              = [module.vpc.default_security_group_id]
-  subnet_ids                          = module.vpc.public_subnets
-  publicly_accessible                 = true
+  subnet_ids                          = module.vpc.private_subnets
+  publicly_accessible                 = false
 
   maintenance_window         = "Mon:00:00-Mon:03:00"
   backup_window              = "03:00-06:00"
