@@ -10,7 +10,7 @@ module "vpc" {
 
   enable_nat_gateway = true
 
-  manage_default_security_group  = true
+  manage_default_security_group = true
   default_security_group_egress = [{
     description = "Allow all TCP and UDP traffic"
     cidr_blocks = "0.0.0.0/0"
@@ -19,7 +19,7 @@ module "vpc" {
     description = "Allow all internal TCP and UDP traffic"
     self        = true
   }]
-  default_security_group_name    = "${local.vpc_name}-default"
+  default_security_group_name = "${local.vpc_name}-default"
 
   tags = {
     Terraform                                         = "true"
