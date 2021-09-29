@@ -12,6 +12,17 @@ module "vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
+  manage_default_security_group  = true
+  default_security_group_egress = [{
+    description = "Allow all TCP and UDP traffic"
+    cidr_blocks = "0.0.0.0/0"
+  }]
+  default_security_group_ingress = [{
+    description = "Allow all TCP and UDP traffic"
+    cidr_blocks = "0.0.0.0/0"
+  }]
+  default_security_group_name    = "${local.vpc_name}-default"
+
   tags = {
     Terraform   = "true"
     Environment = "dev",
