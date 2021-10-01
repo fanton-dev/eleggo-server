@@ -29,3 +29,7 @@ lerna-debug.log*
 
 # IDE - VSCode
 .vscode/*
+
+# Enviourment files
+.env*
+!.env.template
