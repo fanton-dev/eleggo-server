@@ -1,3 +1,9 @@
+import * as dotenv from 'dotenv';
+
+const environment = process.env.NODE_ENV;
+const envFilePath = !environment ? '.env' : `.env.${environment}`;
+dotenv.config({ path: envFilePath });
+
 const configuration = () => ({
   database: {
     type: process.env.DATABASE_DRIVER,
@@ -16,6 +22,20 @@ const configuration = () => ({
       migrationsDir: __dirname + 'migrations',
       subscribersDir: __dirname + 'subscribers',
     },
+  },
+  session: {
+    secret: process.env.SESSION_SECRET,
+    cookie: {
+      maxAge: 60000 * 24,
+    },
+    resave: false,
+    saveUninitialized: false,
+  },
+  google: {
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_API,
+    scope: ['profile'],
   },
 });
 
