@@ -37,6 +37,12 @@ const configuration = () => ({
     callbackURL: process.env.GOOGLE_CALLBACK_API,
     scope: ['profile'],
   },
+  discord: {
+    clientID: process.env.DISCORD_CLIENT_ID,
+    clientSecret: process.env.DISCORD_CLIENT_SECRET,
+    callbackApi: process.env.DISCORD_CALLBACK_API,
+    scope: ['identify'],
+  },
 });
 
 const configObject = configuration();

@@ -29,6 +29,13 @@ export class AuthController {
     return;
   }
 
+  @Get('/discord/login')
+  @UseGuards(AuthDiscordGuard)
+  getDiscordLogin(@Res() res: Response) {
+    res.sendStatus(HttpStatus.OK);
+    return;
+  }
+
   @Get('/status')
   @UseGuards(AuthSessionGuard)
   getStatus(@Req() req: Request) {

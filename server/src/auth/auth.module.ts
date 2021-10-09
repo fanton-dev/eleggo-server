@@ -1,4 +1,5 @@
 import { AuthController } from './controllers/auth.controller';
+import { AuthDiscordStrategy } from './strategies/auth.discord.strategy';
 import { AuthGoogleStrategy } from './strategies/auth.google.strategy';
 import { AuthService } from './services/auth.service';
 import { Module } from '@nestjs/common';
@@ -13,6 +14,7 @@ import { UsersService } from 'src/users/services/users.service';
   imports: [UsersModule, TypeOrmModule.forFeature([User])],
   providers: [
     AuthGoogleStrategy,
+    AuthDiscordStrategy,
     SessionSerializerUtil,
     UsernameUtil,
     AuthService,
