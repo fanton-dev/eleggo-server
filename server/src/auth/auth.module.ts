@@ -1,5 +1,6 @@
 import { AuthController } from './controllers/auth.controller';
 import { AuthDiscordStrategy } from './strategies/auth.discord.strategy';
+import { AuthGithubStrategy } from './strategies/auth.github.strategy';
 import { AuthGoogleStrategy } from './strategies/auth.google.strategy';
 import { AuthService } from './services/auth.service';
 import { Module } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { UsersService } from 'src/users/services/users.service';
   providers: [
     AuthGoogleStrategy,
     AuthDiscordStrategy,
+    AuthGithubStrategy,
     SessionSerializerUtil,
     UsernameUtil,
     AuthService,

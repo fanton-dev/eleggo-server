@@ -36,6 +36,13 @@ export class AuthController {
     return;
   }
 
+  @Get('/github/login')
+  @UseGuards(AuthGithubGuard)
+  getGithubLogin(@Res() res: Response) {
+    res.sendStatus(HttpStatus.OK);
+    return;
+  }
+
   @Get('/status')
   @UseGuards(AuthSessionGuard)
   getStatus(@Req() req: Request) {
