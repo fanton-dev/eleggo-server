@@ -11,6 +11,10 @@ export class UsersService {
     return await this.userRepo.findOne({ username });
   }
 
+  async findByEmail(email: string) {
+    return await this.userRepo.findOne({ email });
+  }
+
   async findByGoogleId(googleId: string) {
     return await this.userRepo.findOne({ googleId });
   }

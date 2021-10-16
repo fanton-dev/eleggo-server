@@ -3,6 +3,7 @@ import * as session from 'express-session';
 
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { configObject } from './configuration';
 
 async function bootstrap() {
@@ -11,6 +12,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
   app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
 }
 bootstrap();

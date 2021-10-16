@@ -1,19 +1,30 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+} from 'class-validator';
 
 @Entity({ name: 'users' })
 export class User implements IUser {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @IsNotEmpty()
   @Column({ unique: true })
   username: string;
 
+  @IsNotEmpty()
   @Column({ nullable: true })
   password: string;
 
+  @IsEmail()
   @Column({ nullable: true, unique: true })
   email: string;
 
+  @IsOptional()
+  @IsPhoneNumber()
   @Column({ name: 'phone_number', nullable: true })
   phoneNumber: string;
 

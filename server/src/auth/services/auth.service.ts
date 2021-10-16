@@ -1,56 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import AuthError from '../errors/auth.error';
 import { IUser } from 'src/users/models/user.model';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/services/users.service';
+
+export type AccountType = 'local' | 'google' | 'discord' | 'github';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
   async validateUser(userDetails: IUser) {
-    if (userDetails.username && userDetails.password) {
-      const user = await this.usersService.findByUsername(userDetails.username);
-      if (user) return user;
-      return null;
+    let accountType: AccountType;
+    userDetails.username && userDetails.password && (accountType = 'local');
+    userDetails.googleId && (accountType = 'google');
+    userDetails.googleId && (accountType = 'discord');
+    userDetails.googleId && (accountType = 'github');
+
+    const user = await this.findUser(userDetails, accountType);
+    if (!user) {
+      if (accountType === 'local') {
+        throw new AuthError('User does not exist.');
+      }
+      return this.createUser(userDetails, accountType);
     }
 
-    if (userDetails.googleId) {
-      const user = await this.usersService.findByGoogleId(userDetails.googleId);
-      if (user) return user;
-      return this.usersService.createUser(userDetails);
-    }
-
-    if (userDetails.discordId) {
-      const user = await this.usersService.findByDiscordId(
-        userDetails.discordId,
-      );
-      if (user) return user;
-      return this.usersService.createUser(userDetails);
-    }
-
-    if (userDetails.githubId) {
-      const user = await this.usersService.findByGithubId(userDetails.githubId);
-      if (user) return user;
-      return this.usersService.createUser(userDetails);
-    }
+    return user;
   }
 
-  createUser(userDetails: IUser) {
-    this.usersService.createUser(userDetails);
+  async createUser(userDetails: IUser, accountType: AccountType) {
+    if (await this.findUser(userDetails, accountType)) {
+      throw new AuthError('User already exists.');
+    }
+    return await this.usersService.createUser(userDetails);
   }
 
-  findUser(
-    identifier: string,
-    type: 'local' | 'google' | 'discord' | 'github',
-  ) {
-    switch (type) {
+  async findUser(userDetails: IUser, accountType: AccountType) {
+    switch (accountType) {
       case 'local':
-        return this.usersService.findByUsername(identifier);
+        return (
+          (await this.usersService.findByUsername(userDetails.username)) ??
+          (await this.usersService.findByEmail(userDetails.email))
+        );
       case 'google':
-        return this.usersService.findByGoogleId(identifier);
+        return await this.usersService.findByGoogleId(userDetails.googleId);
       case 'discord':
-        return this.usersService.findByDiscordId(identifier);
+        return await this.usersService.findByDiscordId(userDetails.discordId);
       case 'github':
-        return this.usersService.findByGithubId(identifier);
+        return await this.usersService.findByGithubId(userDetails.githubId);
     }
   }
 }

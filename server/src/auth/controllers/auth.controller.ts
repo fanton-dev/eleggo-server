@@ -3,6 +3,7 @@ import {
   ConflictException,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Post,
   Req,
@@ -10,7 +11,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { IUser } from 'src/users/models/user.model';
+import { User } from 'src/users/models/user.model';
+import AuthError from '../errors/auth.error';
 import { AuthDiscordGuard } from '../guards/auth.discord.guard';
 import { AuthGithubGuard } from '../guards/auth.github.guard';
 import { AuthGoogleGuard } from '../guards/auth.google.guard';
@@ -22,36 +24,58 @@ import { AuthService } from '../services/auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('/google/login')
+  @Post('/login')
+  @UseGuards(AuthLocalGuard)
+  getLocalLogin(@Res() res: Response) {
+    res.sendStatus(HttpStatus.OK);
+    return;
+  }
+
+  @Post('/register')
+  @HttpCode(HttpStatus.ACCEPTED)
+  async getLocalRegister(@Body() user: User) {
+    try {
+      return { id: (await this.authService.createUser(user, 'local')).id };
+    } catch (ex) {
+      if (ex instanceof AuthError && ex.message === 'User already exists.') {
+        throw new ConflictException(ex.message);
+      }
+    }
+  }
+
+  @Get('/login/google')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGoogleGuard)
-  getGoogleLogin(@Res() res: Response) {
-    res.sendStatus(HttpStatus.OK);
-    return;
+  getGoogleLogin() {
+    return 'OK';
   }
 
-  @Get('/discord/login')
+  @Get('/login/discord')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthDiscordGuard)
-  getDiscordLogin(@Res() res: Response) {
-    res.sendStatus(HttpStatus.OK);
-    return;
+  getDiscordLogin() {
+    return 'OK';
   }
 
-  @Get('/github/login')
+  @Get('/login/github')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGithubGuard)
-  getGithubLogin(@Res() res: Response) {
-    res.sendStatus(HttpStatus.OK);
-    return;
+  getGithubLogin() {
+    return 'OK';
   }
 
   @Get('/status')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthSessionGuard)
-  getStatus(@Req() req: Request) {
-    return req.user;
+  getStatus() {
+    return 'OK';
   }
 
-  @Get('/logout')
+  @Post('/logout')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthSessionGuard)
   getLogout(@Req() req: Request) {
     req.logOut();
+    return 'OK';
   }
 }
