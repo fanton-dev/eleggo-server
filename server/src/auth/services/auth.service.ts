@@ -1,5 +1,5 @@
 import AuthError from '../errors/auth.error';
-import { IUser } from 'src/users/models/user.model';
+import { IUser } from 'src/users/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/services/users.service';
 

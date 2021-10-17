@@ -7,7 +7,7 @@ import { AuthService } from './services/auth.service';
 import { Module } from '@nestjs/common';
 import { SessionSerializerUtil } from './utils/auth.serializer.util';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/users/models/user.model';
+import { User } from 'src/users/entities/user.entity';
 import { UsernameUtil } from './utils/auth.username.util';
 import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/services/users.service';

@@ -13,12 +13,7 @@ import { getRepository } from 'typeorm';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const sessionRepository = getRepository(Session);
-  const swaggerDocument = SwaggerModule.createDocument(
-    app,
-    configObject.swagger,
-  );
 
-  SwaggerModule.setup(configObject.app.prefix, app, swaggerDocument);
   app.use(
     session({
       ...configObject.session,
@@ -29,6 +24,12 @@ async function bootstrap() {
   app.use(passport.session());
   app.setGlobalPrefix(configObject.app.prefix);
   app.useGlobalPipes(new ValidationPipe());
+
+  SwaggerModule.setup(
+    configObject.app.prefix,
+    app,
+    SwaggerModule.createDocument(app, configObject.swagger),
+  );
 
   await app.listen(configObject.app.port);
 }

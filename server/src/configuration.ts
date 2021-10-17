@@ -20,7 +20,7 @@ const configuration = () => ({
     database: process.env.DATABASE_NAME,
     synchronize: true,
     migrationsRun: false,
-    entities: [__dirname + '/**/*.model{.ts,.js}'],
+    entities: [__dirname + '/**/*.entity{.ts,.js}'],
     migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     subscribers: [__dirname + '/subscribers/**/*{.ts,.js}'],
     cli: {

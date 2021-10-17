@@ -1,7 +1,7 @@
 import { AuthService } from '../services/auth.service';
 import { Injectable } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
-import { User } from 'src/users/models/user.model';
+import { User } from 'src/users/entities/user.entity';
 
 type Done = (err: Error, user: User) => void;
 
