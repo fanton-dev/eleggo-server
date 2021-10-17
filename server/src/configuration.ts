@@ -49,6 +49,12 @@ const configuration = () => ({
     callbackApi: process.env.GOOGLE_CALLBACK_API,
     scope: ['profile'],
   },
+  aws: {
+    region: 'us-east-1',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    codeSnippetsS3Bucket: process.env.AWS_CODE_SNIPPETS_S3_BUCKET,
+  },
 });
 
 const configObject = configuration();
