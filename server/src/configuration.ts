@@ -1,10 +1,16 @@
 import * as dotenv from 'dotenv';
 
+import { DocumentBuilder } from '@nestjs/swagger';
+
 const environment = process.env.NODE_ENV;
 const envFilePath = !environment ? '.env' : `.env.${environment}`;
 dotenv.config({ path: envFilePath });
 
 const configuration = () => ({
+  app: {
+    port: parseInt(process.env.APP_PORT || '3000'),
+    prefix: process.env.APP_PREFIX || 'api',
+  },
   database: {
     type: process.env.DATABASE_DRIVER,
     host: process.env.DATABASE_HOST,
@@ -31,6 +37,11 @@ const configuration = () => ({
     resave: false,
     saveUninitialized: false,
   },
+  swagger: new DocumentBuilder()
+    .setTitle('Eleggo Server API')
+    .setDescription('API server for the Eleggo brain compute interface.')
+    .setVersion('0.0.1')
+    .build(),
   google: {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -50,10 +61,11 @@ const configuration = () => ({
     scope: ['profile'],
   },
   aws: {
-    region: 'us-east-1',
+    region: process.env.AWS_REGION,
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     codeSnippetsS3Bucket: process.env.AWS_CODE_SNIPPETS_S3_BUCKET,
+    recordingsS3Bucket: process.env.AWS_RECORDINGS_S3_BUCKET,
   },
 });
 

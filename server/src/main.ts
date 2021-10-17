@@ -3,7 +3,8 @@ import * as session from 'express-session';
 
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
-import { Session } from './auth/models/session.model';
+import { Session } from './auth/entities/session.entity';
+import { SwaggerModule } from '@nestjs/swagger';
 import { TypeormStore } from 'connect-typeorm/out';
 import { ValidationPipe } from '@nestjs/common';
 import { configObject } from './configuration';
@@ -12,7 +13,12 @@ import { getRepository } from 'typeorm';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const sessionRepository = getRepository(Session);
+  const swaggerDocument = SwaggerModule.createDocument(
+    app,
+    configObject.swagger,
+  );
 
+  SwaggerModule.setup(configObject.app.prefix, app, swaggerDocument);
   app.use(
     session({
       ...configObject.session,
@@ -21,10 +27,10 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix(configObject.app.prefix);
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(3000);
+  await app.listen(configObject.app.port);
 }
 
 bootstrap();

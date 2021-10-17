@@ -1,9 +1,9 @@
 {
   "name": "eleggo-server",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "private": true,
+  "description": "API server for the Eleggo brain compute interface.",
+  "author": "API server for the Eleggo brain compute interface.",
+  "private": false,
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -26,6 +26,7 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/passport": "^8.0.1",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/swagger": "^5.1.0",
     "@nestjs/typeorm": "^8.0.2",
     "aws-sdk": "^2.1009.0",
     "class-transformer": "^0.4.0",
@@ -41,7 +42,8 @@
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
