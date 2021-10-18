@@ -26,8 +26,10 @@ declare namespace NodeJS {
     GITHUB_CLIENT_SECRET: string;
     GITHUB_CALLBACK_URL: string;
 
+    AWS_REGION: string;
     AWS_ACCESS_KEY_ID: string;
     AWS_SECRET_ACCESS_KEY: string;
     AWS_CODE_SNIPPETS_S3_BUCKET: string;
+    AWS_RECORDINGS_S3_BUCKET: string;
   }
 }

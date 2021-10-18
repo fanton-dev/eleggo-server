@@ -9,9 +9,12 @@ import { CodeSnippetsModule } from './code-snippets/code-snippets.module';
 import { CodeSnippetsService } from './code-snippets/services/code-snippets.service';
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
+import { RecordingsController } from './recordings/controllers/recordings.controller';
+import { RecordingsModule } from './recordings/recordings.module';
+import { RecordingsService } from './recordings/services/recordings.service';
 import { S3 } from 'aws-sdk';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/models/user.model';
+import { User } from './users/entities/user.entity';
 import { UsersController } from './users/controllers/users.controller';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/services/users.service';
@@ -22,6 +25,7 @@ import { configuration } from './configuration';
     UsersModule,
     AuthModule,
     CodeSnippetsModule,
+    RecordingsModule,
     ConfigModule.forRoot({
       load: [configuration],
     }),
@@ -42,7 +46,17 @@ import { configuration } from './configuration';
     }),
     AwsSdkModule.forFeatures([S3]),
   ],
-  controllers: [UsersController, AuthController, CodeSnippetsController],
-  providers: [UsersService, AuthService, CodeSnippetsService],
+  controllers: [
+    UsersController,
+    AuthController,
+    CodeSnippetsController,
+    RecordingsController,
+  ],
+  providers: [
+    UsersService,
+    AuthService,
+    CodeSnippetsService,
+    RecordingsService,
+  ],
 })
 export class AppModule {}
