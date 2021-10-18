@@ -3,11 +3,15 @@ import { Profile, Strategy } from 'passport-discord';
 import { AuthService } from '../services/auth.service';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import { UsernameUtil } from '../utils/auth.username.util';
 import { configObject } from 'src/configuration';
 
 @Injectable()
 export class AuthDiscordStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly authService: AuthService) {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usernameUtil: UsernameUtil,
+  ) {
     super(configObject.discord);
   }
 
