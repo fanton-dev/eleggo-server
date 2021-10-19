@@ -1,9 +1,9 @@
 import { AuthService } from '../services/auth.service';
+import { IUser } from 'src/users/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
-import { User } from 'src/users/entities/user.entity';
 
-type Done = (err: Error, user: User) => void;
+type Done = (err: Error, user: IUser) => void;
 
 @Injectable()
 export class SessionSerializerUtil extends PassportSerializer {
@@ -11,12 +11,12 @@ export class SessionSerializerUtil extends PassportSerializer {
     super();
   }
 
-  serializeUser(user: User, done: Done) {
-    done(null, user);
+  serializeUser(user: IUser, done: Done) {
+    done(null, { id: user.id });
   }
 
-  async deserializeUser(user: User, done: Done) {
-    const userFromDB = await this.authService.validateUser(user);
+  async deserializeUser(user: IUser, done: Done) {
+    const userFromDB = await this.authService.findUser(user);
     return userFromDB ? done(null, userFromDB) : done(null, null);
   }
 }

@@ -41,7 +41,7 @@ export class User implements IUser {
 
 export interface IUser {
   id?: string;
-  username: string;
+  username?: string;
   password?: string;
   email?: string;
   phoneNumber?: string;

@@ -52,7 +52,7 @@ export class AuthController {
   @ApiConflictResponse({ description: 'User already exists.' })
   async getLocalRegister(@Body() user: RegisterModel) {
     try {
-      return { id: (await this.authService.createUser(user, 'local')).id };
+      return { id: (await this.authService.createUser(user)).id };
     } catch (ex) {
       if (ex instanceof AuthError && ex.message === 'User already exists.') {
         throw new ConflictException(ex.message);
