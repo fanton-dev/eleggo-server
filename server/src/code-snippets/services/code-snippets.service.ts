@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 import { InjectAwsService } from 'nest-aws-sdk';
-import configuration from 'src/configuration';
+import { configObject } from 'src/configuration';
 
 @Injectable()
 export class CodeSnippetsService {
   constructor(@InjectAwsService(S3) private readonly s3: S3) {}
 
-  codeSnippetsBucket = configuration().aws.codeSnippetsS3Bucket;
-
-  async listUserSnippets(username: string) {
+  async listUserCodeSnippets(username: string, subdirectory?: string) {
     const tree = {};
     const queryResponse = await this.s3
-      .listObjectsV2({ Bucket: this.codeSnippetsBucket, Prefix: username })
+      .listObjectsV2({
+        Bucket: configObject.aws.codeSnippetsS3Bucket,
+        Prefix: `${username}/${subdirectory ?? ''}`,
+      })
       .promise();
 
     // The query response contains a list of strings describing the S3 file structure.

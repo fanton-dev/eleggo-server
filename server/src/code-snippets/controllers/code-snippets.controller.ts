@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import {
   ApiCookieAuth,
   ApiForbiddenResponse,
@@ -12,12 +12,18 @@ import { CodeSnippetsService } from '../services/code-snippets.service';
 export class CodeSnippetsController {
   constructor(private readonly codeSnippetsService: CodeSnippetsService) {}
 
-  @Get('/')
+  @Get(':subdirectory(*)')
   @UseGuards(AuthSessionGuard)
   @ApiCookieAuth()
   @ApiOkResponse({ description: 'Tree of user files.' })
   @ApiForbiddenResponse({ description: 'No user logon.' })
-  async getAll(@Req() req: Request) {
-    return this.codeSnippetsService.listUserSnippets(req.user['username']);
+  async getSubdirectory(
+    @Req() req: Request,
+    @Param('subdirectory') subdirectory: string,
+  ) {
+    return this.codeSnippetsService.listUserCodeSnippets(
+      req.user['username'],
+      subdirectory,
+    );
   }
 }
