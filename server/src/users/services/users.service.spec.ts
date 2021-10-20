@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { IUser, User } from '../entities/user.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { CodeSnippetsService } from 'src/code-snippets/services/code-snippets.service';
 import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { uuid } from 'uuidv4';
@@ -36,15 +37,24 @@ describe('UsersService', () => {
       ),
   };
 
+  const mockCodeSnippetsService = {
+    createUserStorage: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
         { provide: getRepositoryToken(User), useValue: mockUsersRepository },
+        { provide: CodeSnippetsService, useValue: mockCodeSnippetsService },
       ],
     }).compile();
 
     service = module.get<UsersService>(UsersService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -105,6 +115,18 @@ describe('UsersService', () => {
     expect(user.password).not.toBe(mockUser.password);
 
     expect(mockUsersRepository.save).toBeCalledTimes(1);
+  });
+
+  it('createUser should create a code snippets storage for the user', async () => {
+    const user = await service.createUser({
+      username: mockUser.username,
+      password: mockUser.password,
+    });
+
+    expect(mockCodeSnippetsService.createUserStorage).toBeCalledTimes(1);
+    expect(mockCodeSnippetsService.createUserStorage).toBeCalledWith(
+      user.username,
+    );
   });
 
   it('verifyPassword should return false on wrong password', async () => {

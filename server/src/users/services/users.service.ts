@@ -3,11 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IUser, User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { CodeSnippetsService } from 'src/code-snippets/services/code-snippets.service';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly codeSnippetsService: CodeSnippetsService,
   ) {}
 
   async findById(id: string) {
@@ -37,7 +39,12 @@ export class UsersService {
   async createUser(userDetails: IUser) {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(userDetails.password, salt);
-    return await this.userRepository.save({ ...userDetails, password: hash });
+    const user = await this.userRepository.save({
+      ...userDetails,
+      password: hash,
+    });
+    this.codeSnippetsService.createUserStorage(user.username);
+    return user;
   }
 
   async verifyPassword(username: string, password: string) {

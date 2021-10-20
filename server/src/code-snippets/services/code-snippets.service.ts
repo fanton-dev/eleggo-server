@@ -62,6 +62,14 @@ export class CodeSnippetsService {
     return queryResponse.Body.toString();
   }
 
+  createUserStorage(username: string) {
+    const completeFilepath = `${username}/`;
+    this.s3.putObject({
+      Bucket: configObject.aws.codeSnippetsS3Bucket,
+      Key: completeFilepath,
+    });
+  }
+
   async saveUserCodeSnippet(username: string, filepath: string, body: string) {
     const completeFilepath = `${username}/${filepath}`;
 
