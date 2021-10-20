@@ -45,6 +45,23 @@ export class CodeSnippetsService {
     return tree;
   }
 
+  async getUserCodeSnippet(username: string, filepath: string) {
+    const completeFilepath = `${username}/${filepath}`;
+
+    if (completeFilepath.endsWith('/')) {
+      throw new CodeSnippetsError(CodeSnippetsErrorCode.INVALID_FILE_PATH);
+    }
+
+    const queryResponse = await this.s3
+      .getObject({
+        Bucket: configObject.aws.codeSnippetsS3Bucket,
+        Key: completeFilepath,
+      })
+      .promise();
+
+    return queryResponse.Body.toString();
+  }
+
   async saveUserCodeSnippet(username: string, filepath: string, body: string) {
     const completeFilepath = `${username}/${filepath}`;
 
@@ -68,6 +85,6 @@ export class CodeSnippetsService {
     }
 
     // If directory => create empty object if it doesn't already exist and run again
-    return this.addToFileTree((tree[item.shift()] ??= {}), item);
+    return this.addToFileTree((tree[item.shift() + '/'] ??= {}), item);
   }
 }

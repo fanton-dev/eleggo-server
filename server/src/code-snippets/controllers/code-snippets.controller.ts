@@ -26,20 +26,27 @@ import { CodeSnippetsService } from '../services/code-snippets.service';
 export class CodeSnippetsController {
   constructor(private readonly codeSnippetsService: CodeSnippetsService) {}
 
-  @Get(':subdirectory(*)|/')
+  @Get(':path(*)')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthSessionGuard)
   @ApiCookieAuth()
-  @ApiOkResponse({ description: 'Tree of user files.' })
+  @ApiOkResponse({
+    description:
+      'Tree of user files in a directory or the contents of a file specified.',
+  })
   @ApiForbiddenResponse({ description: 'No user logon.' })
-  async getSubdirectory(
-    @Req() req: Request,
-    @Param('subdirectory') subdirectory: string,
-  ) {
-    return await this.codeSnippetsService.listUserCodeSnippets(
-      req.user['username'],
-      subdirectory ?? '',
-    );
+  async getSubdirectory(@Req() req: Request, @Param('path') path: string) {
+    path ??= '';
+
+    return path.endsWith('/') || path === ''
+      ? await this.codeSnippetsService.listUserCodeSnippets(
+          req.user['username'],
+          path,
+        )
+      : await this.codeSnippetsService.getUserCodeSnippet(
+          req.user['username'],
+          path,
+        );
   }
 
   @Put(':filepath(*)')
