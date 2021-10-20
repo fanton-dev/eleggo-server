@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -16,6 +17,8 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthSessionGuard } from 'src/auth/guards/auth.session.guard';
+import CodeSnippetsError from '../errors/code-snippets.error';
+import { CodeSnippetsErrorCode } from '../errors/code-snippets.error.code';
 import { PlainBody } from '../middleware/plainbody.middleware';
 import { CodeSnippetsService } from '../services/code-snippets.service';
 
@@ -50,11 +53,20 @@ export class CodeSnippetsController {
     @Param('filepath') filepath: string,
     @PlainBody() body: string,
   ) {
-    this.codeSnippetsService.saveUserCodeSnippet(
-      req.user['username'],
-      filepath,
-      body,
-    );
-    return 'OK';
+    try {
+      await this.codeSnippetsService.saveUserCodeSnippet(
+        req.user['username'],
+        filepath,
+        body,
+      );
+      return 'OK';
+    } catch (ex) {
+      if (
+        ex instanceof CodeSnippetsError &&
+        ex.message === CodeSnippetsErrorCode.INVALID_FILE_PATH
+      ) {
+        throw new BadRequestException(ex.message);
+      }
+    }
   }
 }

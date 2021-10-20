@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 import { InjectAwsService } from 'nest-aws-sdk';
 import { configObject } from 'src/configuration';
+import CodeSnippetsError from '../errors/code-snippets.error';
+import { CodeSnippetsErrorCode } from '../errors/code-snippets.error.code';
 
 @Injectable()
 export class CodeSnippetsService {
@@ -45,6 +47,10 @@ export class CodeSnippetsService {
 
   async saveUserCodeSnippet(username: string, filepath: string, body: string) {
     const completeFilepath = `${username}/${filepath}`;
+
+    if (completeFilepath.endsWith('/')) {
+      throw new CodeSnippetsError(CodeSnippetsErrorCode.INVALID_FILE_PATH);
+    }
 
     await this.s3
       .upload({
