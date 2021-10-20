@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  Body,
   Controller,
   Get,
   HttpCode,
@@ -39,11 +38,11 @@ export class CodeSnippetsController {
     path ??= '';
 
     return path.endsWith('/') || path === ''
-      ? await this.codeSnippetsService.listUserCodeSnippets(
+      ? await this.codeSnippetsService.listCodeSnippets(
           req.user['username'],
           path,
         )
-      : await this.codeSnippetsService.getUserCodeSnippet(
+      : await this.codeSnippetsService.getCodeSnippet(
           req.user['username'],
           path,
         );
@@ -61,7 +60,7 @@ export class CodeSnippetsController {
     @PlainBody() body: string,
   ) {
     try {
-      await this.codeSnippetsService.saveUserCodeSnippet(
+      await this.codeSnippetsService.saveCodeSnippet(
         req.user['username'],
         filepath,
         body,

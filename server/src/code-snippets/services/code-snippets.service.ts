@@ -9,7 +9,7 @@ import { CodeSnippetsErrorCode } from '../errors/code-snippets.error.code';
 export class CodeSnippetsService {
   constructor(@InjectAwsService(S3) private readonly s3: S3) {}
 
-  async listUserCodeSnippets(username: string, subdirectory?: string) {
+  async listCodeSnippets(username: string, subdirectory?: string) {
     const tree = {};
     const prefix = `${username}/${
       subdirectory
@@ -45,7 +45,7 @@ export class CodeSnippetsService {
     return tree;
   }
 
-  async getUserCodeSnippet(username: string, filepath: string) {
+  async getCodeSnippet(username: string, filepath: string) {
     const completeFilepath = `${username}/${filepath}`;
 
     if (completeFilepath.endsWith('/')) {
@@ -70,7 +70,7 @@ export class CodeSnippetsService {
     });
   }
 
-  async saveUserCodeSnippet(username: string, filepath: string, body: string) {
+  async saveCodeSnippet(username: string, filepath: string, body: string) {
     const completeFilepath = `${username}/${filepath}`;
 
     if (completeFilepath.endsWith('/')) {
