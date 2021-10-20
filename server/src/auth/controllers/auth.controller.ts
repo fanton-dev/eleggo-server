@@ -21,6 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import AuthError from '../errors/auth.error';
+import { AuthErrorCode } from '../errors/auth.error.code';
 import { AuthDiscordGuard } from '../guards/auth.discord.guard';
 import { AuthGithubGuard } from '../guards/auth.github.guard';
 import { AuthGoogleGuard } from '../guards/auth.google.guard';
@@ -54,7 +55,10 @@ export class AuthController {
     try {
       return { id: (await this.authService.createUser(user)).id };
     } catch (ex) {
-      if (ex instanceof AuthError && ex.message === 'User already exists.') {
+      if (
+        ex instanceof AuthError &&
+        ex.message === AuthErrorCode.INVALID_LOGIN_CREDENTIALS
+      ) {
         throw new ConflictException(ex.message);
       }
     }

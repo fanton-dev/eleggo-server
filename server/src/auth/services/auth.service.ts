@@ -1,4 +1,5 @@
 import AuthError from '../errors/auth.error';
+import { AuthErrorCode } from '../errors/auth.error.code';
 import { IUser } from 'src/users/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/services/users.service';
@@ -13,7 +14,7 @@ export class AuthService {
 
     if (!user) {
       if (isLocalUser) {
-        throw new AuthError('Invalid login credentials.');
+        throw new AuthError(AuthErrorCode.INVALID_LOGIN_CREDENTIALS);
       }
       return await this.createUser(userDetails);
     }
@@ -25,7 +26,7 @@ export class AuthService {
         userDetails.password,
       ))
     ) {
-      throw new AuthError('Invalid login credentials.');
+      throw new AuthError(AuthErrorCode.INVALID_LOGIN_CREDENTIALS);
     }
 
     return user;
@@ -37,7 +38,7 @@ export class AuthService {
       (await this.findUser({ username })) ||
       (await this.findUser({ email }))
     ) {
-      throw new AuthError('User already exists.');
+      throw new AuthError(AuthErrorCode.USER_ALREADY_EXISTS);
     }
     return await this.usersService.createUser(userDetails);
   }
