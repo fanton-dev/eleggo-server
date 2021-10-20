@@ -43,6 +43,18 @@ export class CodeSnippetsService {
     return tree;
   }
 
+  async saveUserCodeSnippet(username: string, filepath: string, body: string) {
+    const completeFilepath = `${username}/${filepath}`;
+
+    await this.s3
+      .upload({
+        Bucket: configObject.aws.codeSnippetsS3Bucket,
+        Key: completeFilepath,
+        Body: body,
+      })
+      .promise();
+  }
+
   private addToFileTree(tree: any, item: string[]) {
     // If last item => file not directory
     if (item.length === 1) {

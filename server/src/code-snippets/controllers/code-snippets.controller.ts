@@ -1,4 +1,14 @@
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiCookieAuth,
   ApiForbiddenResponse,
@@ -6,6 +16,7 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { AuthSessionGuard } from 'src/auth/guards/auth.session.guard';
+import { PlainBody } from '../middleware/plainbody.middleware';
 import { CodeSnippetsService } from '../services/code-snippets.service';
 
 @Controller('/code-snippets')
@@ -13,6 +24,7 @@ export class CodeSnippetsController {
   constructor(private readonly codeSnippetsService: CodeSnippetsService) {}
 
   @Get(':subdirectory(*)|/')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthSessionGuard)
   @ApiCookieAuth()
   @ApiOkResponse({ description: 'Tree of user files.' })
@@ -21,9 +33,28 @@ export class CodeSnippetsController {
     @Req() req: Request,
     @Param('subdirectory') subdirectory: string,
   ) {
-    return this.codeSnippetsService.listUserCodeSnippets(
+    return await this.codeSnippetsService.listUserCodeSnippets(
       req.user['username'],
       subdirectory ?? '',
     );
+  }
+
+  @Put(':filepath(*)')
+  @HttpCode(HttpStatus.ACCEPTED)
+  @UseGuards(AuthSessionGuard)
+  @ApiCookieAuth()
+  @ApiOkResponse({ description: 'Tree of user files.' })
+  @ApiForbiddenResponse({ description: 'No user logon.' })
+  async putFile(
+    @Req() req: Request,
+    @Param('filepath') filepath: string,
+    @PlainBody() body: string,
+  ) {
+    this.codeSnippetsService.saveUserCodeSnippet(
+      req.user['username'],
+      filepath,
+      body,
+    );
+    return 'OK';
   }
 }
