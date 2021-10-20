@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiAcceptedResponse,
   ApiCookieAuth,
   ApiForbiddenResponse,
   ApiOkResponse,
@@ -48,25 +49,31 @@ export class CodeSnippetsController {
         );
   }
 
-  @Put(':filepath(*)')
+  @Put(':path(*)')
   @HttpCode(HttpStatus.ACCEPTED)
   @UseGuards(AuthSessionGuard)
   @ApiCookieAuth()
-  @ApiOkResponse({ description: 'Tree of user files.' })
+  @ApiAcceptedResponse({ description: 'File or directory created.' })
   @ApiForbiddenResponse({ description: 'No user logon.' })
-  async putFile(
+  putFile(
     @Req() req: Request,
-    @Param('filepath') filepath: string,
+    @Param('path') path: string,
     @PlainBody() body: string,
   ) {
     try {
-      await this.codeSnippetsService.saveCodeSnippet(
-        req.user['username'],
-        filepath,
-        body,
-      );
+      path.endsWith('/') || path === ''
+        ? this.codeSnippetsService.createCodeSnippetsDirectory(
+            req.user['username'],
+            path,
+          )
+        : this.codeSnippetsService.saveCodeSnippet(
+            req.user['username'],
+            path,
+            body,
+          );
       return 'OK';
     } catch (ex) {
+      console.log(ex);
       if (
         ex instanceof CodeSnippetsError &&
         ex.message === CodeSnippetsErrorCode.INVALID_FILE_PATH

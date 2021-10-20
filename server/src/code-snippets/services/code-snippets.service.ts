@@ -62,12 +62,31 @@ export class CodeSnippetsService {
     return queryResponse.Body.toString();
   }
 
-  createUserStorage(username: string) {
+  async createUserStorage(username: string) {
     const completeFilepath = `${username}/`;
-    this.s3.putObject({
-      Bucket: configObject.aws.codeSnippetsS3Bucket,
-      Key: completeFilepath,
-    });
+    await this.s3
+      .putObject({
+        Bucket: configObject.aws.codeSnippetsS3Bucket,
+        Key: completeFilepath,
+      })
+      .promise();
+  }
+
+  async createCodeSnippetsDirectory(username: string, subdirectory: string) {
+    const prefix = `${username}/${
+      subdirectory
+        ? subdirectory.endsWith('/')
+          ? subdirectory
+          : subdirectory + '/'
+        : ''
+    }`;
+
+    await this.s3
+      .putObject({
+        Bucket: configObject.aws.codeSnippetsS3Bucket,
+        Key: prefix,
+      })
+      .promise();
   }
 
   async saveCodeSnippet(username: string, filepath: string, body: string) {
