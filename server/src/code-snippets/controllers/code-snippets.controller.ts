@@ -12,7 +12,7 @@ import { CodeSnippetsService } from '../services/code-snippets.service';
 export class CodeSnippetsController {
   constructor(private readonly codeSnippetsService: CodeSnippetsService) {}
 
-  @Get(':subdirectory(*)')
+  @Get(':subdirectory(*)|/')
   @UseGuards(AuthSessionGuard)
   @ApiCookieAuth()
   @ApiOkResponse({ description: 'Tree of user files.' })
@@ -23,7 +23,7 @@ export class CodeSnippetsController {
   ) {
     return this.codeSnippetsService.listUserCodeSnippets(
       req.user['username'],
-      subdirectory,
+      subdirectory ?? '',
     );
   }
 }

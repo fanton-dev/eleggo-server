@@ -9,10 +9,17 @@ export class CodeSnippetsService {
 
   async listUserCodeSnippets(username: string, subdirectory?: string) {
     const tree = {};
+    const prefix = `${username}/${
+      subdirectory
+        ? subdirectory.endsWith('/')
+          ? subdirectory
+          : subdirectory + '/'
+        : ''
+    }`;
     const queryResponse = await this.s3
       .listObjectsV2({
         Bucket: configObject.aws.codeSnippetsS3Bucket,
-        Prefix: `${username}/${subdirectory ?? ''}`,
+        Prefix: prefix,
       })
       .promise();
 
@@ -30,7 +37,7 @@ export class CodeSnippetsService {
     // Each such array is being iterated over a recursive function which keeps nesting
     // items (strings from the array) until the last one is reached.
     queryResponse.Contents.filter((item) => !item.Key.endsWith('/'))
-      .map((item) => item.Key.replace(`${username}/`, '').split('/'))
+      .map((item) => item.Key.replace(prefix, '').split('/'))
       .forEach((item) => this.addToFileTree(tree, item));
 
     return tree;
