@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CodeInput from '../CodeInput/CodeInput';
 import ModeSelection from '../ModeSelection/ModeSelection';
@@ -33,8 +33,9 @@ const SwitchMode = () => {
         },
       };
 
-      axios.post('http://localhost:5000/enable-detection', data)
-          .then((res) => console.log(res));
+      axios
+        .post('http://localhost:5000/enable-detection', data)
+        .then((res) => console.log(res));
     }
   }, [modeSwitch, left, right, none, prerequisite, chosenMode]);
 
@@ -60,8 +61,8 @@ const SwitchMode = () => {
 
   return (
     <div className={styles.switchMode}>
-      <ModeSelection {...modeSelectionProps}/>
-      <CodeInput {...codeInputProps}/>
+      <ModeSelection {...modeSelectionProps} />
+      <CodeInput {...codeInputProps} />
     </div>
   );
 };

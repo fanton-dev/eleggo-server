@@ -1,23 +1,22 @@
-import {FormControlLabel, FormGroup, Switch} from '@material-ui/core';
-import React, {FC, useState} from 'react';
+import { FormControlLabel, FormGroup, Switch } from '@material-ui/core';
+import React, { FC, useState } from 'react';
 
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import classNames from 'classnames';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import styles from './ModeSelection.module.css';
-import {withStyles} from '@material-ui/core/styles';
 
 interface Props {
-  switchModeCallback: (switchValue: boolean) => void,
-  chosenModeCallback: (mode: string) => void,
+  switchModeCallback: (switchValue: boolean) => void;
+  chosenModeCallback: (mode: string) => void;
 }
 
 const CustomSwitch = withStyles({
   switchBase: {
-    'color': 'grey',
+    color: 'grey',
     '&$checked': {
       color: '#339C5E',
     },
@@ -50,19 +49,21 @@ const ModeSelection: FC<Props> = (props: Props) => {
     props.switchModeCallback(event.target.checked);
   };
 
-  const handleModeSelect = (event: React.ChangeEvent<{
-    name?: string | undefined;
-    value: unknown;
-  }>) => {
+  const handleModeSelect = (
+    event: React.ChangeEvent<{
+      name?: string | undefined;
+      value: unknown;
+    }>,
+  ) => {
     setMode(String(event.target.value));
     props.chosenModeCallback(String(event.target.value));
   };
 
   return (
-    <div className={styles.modeSelection} >
+    <div className={styles.modeSelection}>
       <FormGroup>
         <FormControlLabel
-          style={{minWidth: 190}}
+          style={{ minWidth: 190 }}
           className={classes.selectControl}
           control={
             <CustomSwitch
@@ -85,13 +86,13 @@ const ModeSelection: FC<Props> = (props: Props) => {
           value={mode}
           onChange={handleModeSelect}
         >
-          {
-            modes.map((currentMode) => {
-              return <MenuItem key={currentMode} value={currentMode}>
+          {modes.map((currentMode) => {
+            return (
+              <MenuItem key={currentMode} value={currentMode}>
                 {currentMode}
-              </MenuItem>;
-            })
-          }
+              </MenuItem>
+            );
+          })}
         </Select>
       </FormControl>
     </div>

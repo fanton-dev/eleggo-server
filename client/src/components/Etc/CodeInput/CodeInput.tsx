@@ -1,9 +1,7 @@
-import React, {FC, useState} from 'react';
+import React, { FC, useState, ChangeEventHandler } from 'react';
 
-import {ChangeEventHandler} from 'react';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import {makeStyles} from '@material-ui/core/styles';
+import { Tab, Tabs } from '@mui/material';
+import { makeStyles } from '@mui/material/styles';
 import styles from './CodeInput.module.css';
 
 interface CodeInputProps {
@@ -52,15 +50,16 @@ const TabPanel: FC<TabPanelProps> = (props: TabPanelProps) => {
 
   return (
     <div>
-      {
-        props.value === props.index ?
-          <textarea
-            placeholder='//Type your code here...'
-            className={styles.code}
-            value={code}
-            onChange={handleCodeChange}
-          /> : ''
-      }
+      {props.value === props.index ? (
+        <textarea
+          placeholder="//Type your code here..."
+          className={styles.code}
+          value={code}
+          onChange={handleCodeChange}
+        />
+      ) : (
+        ''
+      )}
     </div>
   );
 };
@@ -70,38 +69,36 @@ const CodeInput: FC<CodeInputProps> = (props: CodeInputProps) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const indexes = [0, 1, 2, 3];
 
-  const handleChange: ((
-    event: React.ChangeEvent<{}>,
-    value: any,
-  ) => void) = (_, newValue) => setSelectedTab(newValue);
+  const handleChange: (event: React.ChangeEvent<{}>, value: any) => void = (
+    _,
+    newValue,
+  ) => setSelectedTab(newValue);
 
   return (
     <div className={classes.root}>
       <Tabs
         value={selectedTab}
         onChange={handleChange}
-        TabIndicatorProps={{className: classes.indicator}}
+        TabIndicatorProps={{ className: classes.indicator }}
       >
         <Tab label="Left" />
         <Tab label="None" />
         <Tab label="Right" />
         <Tab label="Prerequisite" />
       </Tabs>
-      {
-        indexes.map((index) => {
-          return (
-            <TabPanel
-              key={index}
-              value={selectedTab}
-              index={index}
-              leftCallback={(code) => props.leftCallback(code)}
-              noneCallback={(code) => props.noneCallback(code)}
-              rightCallback={(code) => props.rightCallback(code)}
-              prereqCallback={(code) => props.prereqCallback(code)}
-            />
-          );
-        })
-      }
+      {indexes.map((index) => {
+        return (
+          <TabPanel
+            key={index}
+            value={selectedTab}
+            index={index}
+            leftCallback={(code) => props.leftCallback(code)}
+            noneCallback={(code) => props.noneCallback(code)}
+            rightCallback={(code) => props.rightCallback(code)}
+            prereqCallback={(code) => props.prereqCallback(code)}
+          />
+        );
+      })}
     </div>
   );
 };
