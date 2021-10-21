@@ -72,17 +72,13 @@ export class CodeSnippetsService {
       .promise();
   }
 
-  async createCodeSnippetsDirectory(username: string, subdirectory: string) {
+  async createDirectory(username: string, subdirectory: string) {
     const prefix = `${username}/${
-      subdirectory
-        ? subdirectory.endsWith('/')
-          ? subdirectory
-          : subdirectory + '/'
-        : ''
+      subdirectory.endsWith('/') ? subdirectory : subdirectory + '/'
     }`;
 
     await this.s3
-      .putObject({
+      .upload({
         Bucket: configObject.aws.codeSnippetsS3Bucket,
         Key: prefix,
       })
@@ -103,6 +99,52 @@ export class CodeSnippetsService {
         Body: body,
       })
       .promise();
+  }
+
+  async deleteDirectory(username: string, path: string) {
+    const prefix = `${username}/${path}`;
+
+    const listedObjects = await this.s3
+      .listObjectsV2({
+        Bucket: configObject.aws.codeSnippetsS3Bucket,
+        Prefix: prefix,
+      })
+      .promise();
+
+    if (listedObjects.Contents.length === 0) {
+      throw new CodeSnippetsError(CodeSnippetsErrorCode.INVALID_FILE_PATH);
+    }
+
+    const deleteParams = {
+      Bucket: configObject.aws.codeSnippetsS3Bucket,
+      Delete: { Objects: [] },
+    };
+
+    listedObjects.Contents.forEach(({ Key }) => {
+      deleteParams.Delete.Objects.push({ Key });
+    });
+
+    try {
+      await this.s3.deleteObjects(deleteParams).promise();
+    } catch (ex) {
+      throw new CodeSnippetsError(CodeSnippetsErrorCode.INVALID_FILE_PATH);
+    }
+
+    if (listedObjects.IsTruncated) await this.deleteDirectory(username, path);
+  }
+
+  async deleteCodeSnippet(username: string, filepath: string) {
+    const completeFilepath = `${username}/${filepath}`;
+    try {
+      await this.s3
+        .deleteObject({
+          Bucket: configObject.aws.codeSnippetsS3Bucket,
+          Key: completeFilepath,
+        })
+        .promise();
+    } catch (ex) {
+      throw new CodeSnippetsError(CodeSnippetsErrorCode.INVALID_FILE_PATH);
+    }
   }
 
   private addToFileTree(tree: any, item: string[]) {

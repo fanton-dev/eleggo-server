@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -13,6 +14,7 @@ import {
   ApiAcceptedResponse,
   ApiCookieAuth,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -35,7 +37,8 @@ export class CodeSnippetsController {
       'Tree of user files in a directory or the contents of a file specified.',
   })
   @ApiForbiddenResponse({ description: 'No user logon.' })
-  async getSubdirectory(@Req() req: Request, @Param('path') path: string) {
+  @ApiNotFoundResponse({ description: 'No such file or directory.' })
+  async getObject(@Req() req: Request, @Param('path') path: string) {
     path ??= '';
 
     return path.endsWith('/') || path === ''
@@ -55,25 +58,24 @@ export class CodeSnippetsController {
   @ApiCookieAuth()
   @ApiAcceptedResponse({ description: 'File or directory created.' })
   @ApiForbiddenResponse({ description: 'No user logon.' })
-  putFile(
+  async putObject(
     @Req() req: Request,
     @Param('path') path: string,
-    @PlainBody() body: string,
+    @PlainBody() body?: string,
   ) {
     try {
       path.endsWith('/') || path === ''
-        ? this.codeSnippetsService.createCodeSnippetsDirectory(
+        ? await this.codeSnippetsService.createDirectory(
             req.user['username'],
             path,
           )
-        : this.codeSnippetsService.saveCodeSnippet(
+        : await this.codeSnippetsService.saveCodeSnippet(
             req.user['username'],
             path,
             body,
           );
-      return 'OK';
+      return 'Accepted';
     } catch (ex) {
-      console.log(ex);
       if (
         ex instanceof CodeSnippetsError &&
         ex.message === CodeSnippetsErrorCode.INVALID_FILE_PATH
@@ -81,5 +83,24 @@ export class CodeSnippetsController {
         throw new BadRequestException(ex.message);
       }
     }
+  }
+
+  @Delete(':path(*)')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthSessionGuard)
+  @ApiCookieAuth()
+  @ApiAcceptedResponse({ description: 'File or directory created.' })
+  @ApiForbiddenResponse({ description: 'No user logon.' })
+  async deleteObject(@Req() req: Request, @Param('path') path: string) {
+    path.endsWith('/') || path === ''
+      ? await this.codeSnippetsService.deleteDirectory(
+          req.user['username'],
+          path,
+        )
+      : await this.codeSnippetsService.deleteCodeSnippet(
+          req.user['username'],
+          path,
+        );
+    return 'OK';
   }
 }
