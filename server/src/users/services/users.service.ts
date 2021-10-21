@@ -38,7 +38,9 @@ export class UsersService {
 
   async createUser(userDetails: IUser) {
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(userDetails.password, salt);
+    const hash = userDetails.password
+      ? await bcrypt.hash(userDetails.password, salt)
+      : undefined;
     const user = await this.userRepository.save({
       ...userDetails,
       password: hash,
