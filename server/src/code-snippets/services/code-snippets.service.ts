@@ -24,6 +24,7 @@ export class CodeSnippetsService {
         Prefix: prefix,
       })
       .promise();
+    console.log(queryResponse);
 
     // The query response contains a list of strings describing the S3 file structure.
     // For example it may look something like this:
