@@ -21,7 +21,7 @@
     "noEmit": true
   },
   "include": [
-    "src/*"
+    "src/*", "types",
   ],
   "exclude": [
     "src/**/*.test.ts",
