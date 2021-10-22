@@ -31,6 +31,7 @@
     "web-vitals": "^2.1.2"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.12.1",
     "@storybook/addon-actions": "^6.3.12",
     "@storybook/addon-essentials": "^6.3.12",
     "@storybook/addon-links": "^6.3.12",
@@ -50,6 +51,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-prettier": "^4.0.0",
+    "identity-obj-proxy": "^3.0.0",
     "prettier": "^2.4.1"
   },
   "scripts": {
@@ -88,6 +90,14 @@
         "rules": {
           "import/no-anonymous-default-export": "off"
         }
+      },
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
       }
     ]
   },
@@ -102,5 +112,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|scss)$": "identity-obj-proxy"
+    }
   }
 }
