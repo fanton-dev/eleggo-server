@@ -11,6 +11,9 @@ const configuration = () => ({
     port: parseInt(process.env.APP_PORT || '3000'),
     prefix: process.env.APP_PREFIX || 'api',
   },
+  client: {
+    root: process.env.CLIENT_ROOT,
+  },
   database: {
     type: process.env.DATABASE_DRIVER,
     host: process.env.DATABASE_HOST,
