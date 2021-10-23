@@ -14,6 +14,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const sessionRepository = getRepository(Session);
 
+  app.enableCors({
+    credentials: true,
+    origin: (origin, callback) => {
+      if (origin === configObject.client.root) {
+        return callback(null, true);
+      }
+      callback(new Error('Not allowed by CORS.'));
+    },
+  });
   app.use(
     session({
       ...configObject.session,
