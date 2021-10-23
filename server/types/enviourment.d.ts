@@ -4,6 +4,7 @@ declare namespace NodeJS {
 
     APP_PORT?: string;
     APP_PREFIX?: string;
+    APP_DOMAIN?: string;
 
     CLIENT_ROOT?: string;
 

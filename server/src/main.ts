@@ -13,15 +13,14 @@ import { getRepository } from 'typeorm';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const sessionRepository = getRepository(Session);
+  const allowedOrigins = [
+    `${configObject.app.domain}:${configObject.app.port}`,
+    configObject.client.root,
+  ];
 
   app.enableCors({
     credentials: true,
-    origin: (origin, callback) => {
-      if (origin === configObject.client.root) {
-        return callback(null, true);
-      }
-      callback(new Error('Not allowed by CORS.'));
-    },
+    origin: allowedOrigins,
   });
   app.use(
     session({

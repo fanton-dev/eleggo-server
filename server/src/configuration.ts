@@ -10,6 +10,7 @@ const configuration = () => ({
   app: {
     port: parseInt(process.env.APP_PORT || '3000'),
     prefix: process.env.APP_PREFIX || 'api',
+    domain: process.env.APP_DOMAIN || 'localhost',
   },
   client: {
     root: process.env.CLIENT_ROOT,
