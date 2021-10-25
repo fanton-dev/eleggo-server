@@ -26,6 +26,7 @@ const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const WorkerPlugin = require('worker-plugin');
 
 const postcssNormalize = require('postcss-normalize');
 
@@ -557,6 +558,8 @@ module.exports = function (webpackEnv) {
       ],
     },
     plugins: [
+      // Includes service workers defined in the src module.
+      new WorkerPlugin(),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(

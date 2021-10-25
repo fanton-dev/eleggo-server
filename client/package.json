@@ -110,7 +110,8 @@
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-prettier": "^4.0.0",
     "identity-obj-proxy": "^3.0.0",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "worker-plugin": "^5.0.1"
   },
   "scripts": {
     "start": "node scripts/start.js",
