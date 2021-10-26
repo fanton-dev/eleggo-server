@@ -1,9 +1,9 @@
 import React, { createContext, FC, useEffect, useState } from 'react';
-import { HeadsetReadWorkerResponse } from '../workers/headset-read-worker';
+import { HeadsetDataWorkerResponse } from '../workers/headset-data-worker';
 
 interface HeadsetContextExports {
   headset: BluetoothDevice | undefined;
-  setHeadset: (headset: BluetoothDevice) => void;
+  setHeadset: (headset: BluetoothDevice | undefined) => void;
   headsetData: number[][];
   startRecording: () => void;
   stopRecording: () => void;
@@ -17,7 +17,7 @@ export const HeadsetContext = createContext<HeadsetContextExports>({
   stopRecording: () => {},
 });
 
-const headsetReadWorker = new Worker('../workers/headset-read-worker.ts', {
+const headsetDataWorker = new Worker('../workers/headset-data-worker.ts', {
   type: 'module',
 });
 
@@ -28,46 +28,47 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
   const [headsetData, setHeadsetData] = useState<number[][]>(
     Array(8).fill(Array(60).fill(0)),
   );
+  const [headsetReadingTask, setHeadsetReadingTask] = useState<
+    NodeJS.Timer | undefined
+  >(undefined);
 
   useEffect(() => {
     headset
-      ? headsetReadWorker.postMessage({
-          eventType: 'read',
-          actionType: 'start',
-          headset,
-        })
-      : headsetReadWorker.postMessage({
-          eventType: 'read',
-          actionType: 'stop',
-        });
+      ? setHeadsetReadingTask(
+          setInterval(async () => {
+            // TODO: replace with actual headset data reading
+            const reading = Array(8).fill(
+              Array(60).fill(headsetData[0][0] + 1),
+            );
+
+            setHeadsetData(reading);
+            headsetDataWorker.postMessage({
+              eventType: 'data',
+              headsetData,
+            });
+          }, 8),
+        )
+      : headsetReadingTask && clearInterval(headsetReadingTask);
+    console.log(headsetReadingTask);
   }, [headset]);
 
   const startRecording = () => {
-    headsetReadWorker.postMessage({
-      eventType: 'record',
-      actionType: 'start',
+    headsetDataWorker.postMessage({
+      eventType: 'record-start',
     });
   };
 
   const stopRecording = () => {
-    headsetReadWorker.postMessage({
-      eventType: 'record',
-      actionType: 'stop',
+    headsetDataWorker.postMessage({
+      eventType: 'record-stop',
     });
   };
 
-  headsetReadWorker.onmessage = (
-    event: MessageEvent<HeadsetReadWorkerResponse>,
+  headsetDataWorker.onmessage = (
+    event: MessageEvent<HeadsetDataWorkerResponse>,
   ) => {
-    switch (event.data.eventType) {
-      case 'read':
-        setHeadsetData(event.data.headsetData);
-        break;
-      case 'record':
-        // TODO: Post recording to the backend
-        console.log(event.data.headsetRecording);
-        break;
-    }
+    // TODO: Post recording to the backend
+    console.log(event.data.headsetRecording);
   };
 
   return (
