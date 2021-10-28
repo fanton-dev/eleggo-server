@@ -57,6 +57,10 @@ addEventListener(
 
           // Sending current detection code snippet to local runner
           // TODO: implement this
+
+          // Notifying the main thread so the Discord RPC updates
+          previousDetection === detection && postMessage({ detection });
+          previousDetection = detection;
         }
         break;
 

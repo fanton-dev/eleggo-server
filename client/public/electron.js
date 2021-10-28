@@ -1,9 +1,11 @@
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const ipcMain = electron.ipcMain;
 
 const path = require('path');
 const isDev = require('electron-is-dev');
+const discordClient = require('discord-rich-presence')('893155192529367110');
 
 let mainWindow;
 
@@ -13,6 +15,10 @@ app.on('ready', () => {
     height: 800,
     webPreferences: {
       experimentalFeatures: true,
+      nodeIntegration: false, // is default value after Electron v5
+      contextIsolation: true, // protect against prototype pollution
+      enableRemoteModule: false, // turn off remote
+      preload: path.join(__dirname, 'preload.js'), // use a preload script
     },
   });
   isDev && mainWindow.webContents.openDevTools();
@@ -34,4 +40,15 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on('toDiscordRPC', (event, args) => {
+  console.log(args);
+  discordClient.updatePresence({
+    state: args.state,
+    details: args.details,
+    startTimestamp: Date.now(),
+    largeImageKey: 'eleggo',
+    instance: true,
+  });
 });

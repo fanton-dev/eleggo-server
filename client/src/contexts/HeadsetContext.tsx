@@ -1,4 +1,5 @@
 import React, { createContext, FC, useEffect, useState } from 'react';
+import isElectron from 'is-electron';
 import { HeadsetRecordingWorkerResponse } from '../workers/headset-recording-worker';
 import { HeadsetDetectionWorkerResponse } from '../workers/headset-detection-worker';
 
@@ -112,6 +113,21 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
   ) => {
     // TODO: Post recording to the backend
     console.log(event.data.headsetRecording);
+  };
+
+  headsetDetectionWorker.onmessage = (
+    event: MessageEvent<HeadsetDetectionWorkerResponse>,
+  ) => {
+    const detection = event.data.detection;
+
+    if (!isElectron()) {
+      return;
+    }
+
+    window.api.send('toDiscordRPC', {
+      state: 'Thinking about',
+      details: detection.toUpperCase(),
+    });
   };
 
   return (
