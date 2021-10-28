@@ -70,6 +70,7 @@ const configuration = () => ({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     codeSnippetsS3Bucket: process.env.AWS_CODE_SNIPPETS_S3_BUCKET,
     recordingsS3Bucket: process.env.AWS_RECORDINGS_S3_BUCKET,
+    neuralNetworksS3Bucket: process.env.AWS_NEURAL_NETWORKS_S3_BUCKET,
   },
 });
 

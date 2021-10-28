@@ -1,10 +1,4 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsPhoneNumber,
-} from 'class-validator';
 
 @Entity({ name: 'users' })
 export class User implements IUser {

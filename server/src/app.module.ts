@@ -18,6 +18,9 @@ import { User } from './users/entities/user.entity';
 import { UsersController } from './users/controllers/users.controller';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/services/users.service';
+import { NeuralNetworksModule } from './neural-networks/neural-networks.module';
+import { NeuralNetworksController } from './neural-networks/controllers/neural-networks.controller';
+import { NeuralNetworksService } from './neural-networks/service/neural-networks.service';
 import { configuration } from './configuration';
 
 @Module({
@@ -26,6 +29,7 @@ import { configuration } from './configuration';
     AuthModule,
     CodeSnippetsModule,
     RecordingsModule,
+    NeuralNetworksModule,
     ConfigModule.forRoot({
       load: [configuration],
     }),
@@ -51,12 +55,14 @@ import { configuration } from './configuration';
     AuthController,
     CodeSnippetsController,
     RecordingsController,
+    NeuralNetworksController,
   ],
   providers: [
     UsersService,
     AuthService,
     CodeSnippetsService,
     RecordingsService,
+    NeuralNetworksService,
   ],
 })
 export class AppModule {}

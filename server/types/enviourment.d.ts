@@ -34,5 +34,6 @@ declare namespace NodeJS {
     AWS_SECRET_ACCESS_KEY?: string;
     AWS_CODE_SNIPPETS_S3_BUCKET?: string;
     AWS_RECORDINGS_S3_BUCKET?: string;
+    AWS_NEURAL_NETWORKS_S3_BUCKET?: string;
   }
 }
