@@ -19,3 +19,14 @@ module "s3_recordings_bucket" {
     enabled = true
   }
 }
+
+module "s3_neural_networks_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+
+  bucket = "eleggo-dev-neural-networks-bucket"
+  acl    = "public-read"
+
+  versioning = {
+    enabled = true
+  }
+}
