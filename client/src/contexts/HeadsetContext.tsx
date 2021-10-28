@@ -1,5 +1,6 @@
 import React, { createContext, FC, useEffect, useState } from 'react';
 import { HeadsetRecordingWorkerResponse } from '../workers/headset-recording-worker';
+import { HeadsetDetectionWorkerResponse } from '../workers/headset-detection-worker';
 
 interface HeadsetContextExports {
   headset: BluetoothDevice | undefined;
@@ -8,6 +9,9 @@ interface HeadsetContextExports {
   isRecording: boolean;
   startRecording: () => void;
   stopRecording: () => void;
+  isDetecting: boolean;
+  startDetecting: (modelName: string) => void;
+  stopDetecting: () => void;
 }
 
 export const HeadsetContext = createContext<HeadsetContextExports>({
@@ -17,10 +21,22 @@ export const HeadsetContext = createContext<HeadsetContextExports>({
   isRecording: false,
   startRecording: () => {},
   stopRecording: () => {},
+  isDetecting: false,
+  startDetecting: (modelName) => {
+    return modelName;
+  },
+  stopDetecting: () => {},
 });
 
 const headsetRecordingWorker = new Worker(
   '../workers/headset-recording-worker.ts',
+  {
+    type: 'module',
+  },
+);
+
+const headsetDetectionWorker = new Worker(
+  '../workers/headset-detection-worker.ts',
   {
     type: 'module',
   },
@@ -34,6 +50,7 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
     Array(8).fill(Array(60).fill(0)),
   );
   const [isRecording, setIsRecording] = useState(false);
+  const [isDetecting, setIsDetecting] = useState(false);
   const [headsetReadingTask, setHeadsetReadingTask] = useState<
     NodeJS.Timer | undefined
   >(undefined);
@@ -75,6 +92,21 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
     });
   };
 
+  const startDetecting = (modelName: string) => {
+    setIsDetecting(true);
+    headsetDetectionWorker.postMessage({
+      eventType: 'start',
+      modelName,
+    });
+  };
+
+  const stopDetecting = () => {
+    setIsDetecting(false);
+    headsetDetectionWorker.postMessage({
+      eventType: 'stop',
+    });
+  };
+
   headsetRecordingWorker.onmessage = (
     event: MessageEvent<HeadsetRecordingWorkerResponse>,
   ) => {
@@ -91,6 +123,9 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
         isRecording,
         startRecording,
         stopRecording,
+        isDetecting,
+        startDetecting,
+        stopDetecting,
       }}
     >
       {children}
