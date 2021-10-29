@@ -41,6 +41,38 @@ export class NeuralNetworksService {
     return JSON.parse(queryResponse.Body.toString());
   }
 
+  async listModelWeights(model: string) {
+    const prefix = `weights/${model.endsWith('/') ? model : model + '/'}`;
+
+    const queryResponse = await this.s3
+      .listObjectsV2({
+        Bucket: configObject.aws.neuralNetworksS3Bucket,
+        Prefix: prefix,
+      })
+      .promise();
+
+    const result = queryResponse.Contents.filter(
+      (item) => !item.Key.endsWith('/'),
+    ).map((item) => item.Key.replace(prefix, ''));
+
+    return result;
+  }
+
+  async getModelWeightsFile(filepath: string) {
+    const completeFilepath = `weights/${filepath}`;
+
+    if (completeFilepath.endsWith('/')) {
+      throw new NeuralNetworksError(NeuralNetworksErrorCode.INVALID_FILE_PATH);
+    }
+
+    const redirectUrl = this.s3.getSignedUrl('getObject', {
+      Bucket: configObject.aws.neuralNetworksS3Bucket,
+      Key: completeFilepath,
+    });
+
+    return redirectUrl;
+  }
+
   async getModelMetadata(filepath: string) {
     const completeFilepath = `metadata/${filepath}`;
 

@@ -4,10 +4,15 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseBoolPipe,
   Query,
+  Res,
 } from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
+import { Response } from 'express';
+import {
+  ApiMovedPermanentlyResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { NeuralNetworksService } from '../service/neural-networks.service';
 
 @Controller('/neural-networks')
@@ -29,13 +34,27 @@ export class NeuralNetworksController {
   @ApiOkResponse({
     description: 'Neural network model or its metadata in JSON.',
   })
+  @ApiMovedPermanentlyResponse({ description: 'Model weights download.' })
   @ApiNotFoundResponse({ description: 'No such file or directory.' })
   async getNetwork(
+    @Res() res: Response,
     @Param('path') path: string,
-    @Query('metadata', new ParseBoolPipe()) metadata: boolean,
+    @Query('type') type: string,
   ) {
-    return metadata
-      ? await this.neuralNetworksService.getModelMetadata(path)
-      : await this.neuralNetworksService.getModel(path);
+    switch (type) {
+      case 'metadata':
+        return res.json(
+          await this.neuralNetworksService.getModelMetadata(path),
+        );
+      case 'weights':
+        return path.endsWith('/')
+          ? res.json(await this.neuralNetworksService.listModelWeights(path))
+          : res.redirect(
+              await this.neuralNetworksService.getModelWeightsFile(path),
+            );
+      case 'model':
+      default:
+        return res.json(await this.neuralNetworksService.getModel(path));
+    }
   }
 }
