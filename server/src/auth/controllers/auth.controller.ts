@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Redirect,
   Req,
   Res,
   UseGuards,
@@ -16,10 +17,12 @@ import {
   ApiCookieAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
+  ApiMovedPermanentlyResponse,
   ApiOkResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
+import { configObject } from 'src/configuration';
 import AuthError from '../errors/auth.error';
 import { AuthErrorCode } from '../errors/auth.error.code';
 import { AuthDiscordGuard } from '../guards/auth.discord.guard';
@@ -66,24 +69,30 @@ export class AuthController {
 
   @Get('/login/google')
   @HttpCode(HttpStatus.OK)
+  @Redirect(configObject.client.root, HttpStatus.MOVED_PERMANENTLY)
   @UseGuards(AuthGoogleGuard)
-  @ApiOkResponse({ description: 'User logged in.' })
+  @ApiOkResponse({ description: 'Google OAuth screen.' })
+  @ApiMovedPermanentlyResponse({ description: 'User logged in.' })
   getGoogleLogin() {
     return 'OK';
   }
 
   @Get('/login/discord')
   @HttpCode(HttpStatus.OK)
+  @Redirect(configObject.client.root, HttpStatus.MOVED_PERMANENTLY)
   @UseGuards(AuthDiscordGuard)
-  @ApiOkResponse({ description: 'User logged in.' })
+  @ApiOkResponse({ description: 'Discord OAuth screen.' })
+  @ApiMovedPermanentlyResponse({ description: 'User logged in.' })
   getDiscordLogin() {
     return 'OK';
   }
 
   @Get('/login/github')
   @HttpCode(HttpStatus.OK)
+  @Redirect(configObject.client.root, HttpStatus.MOVED_PERMANENTLY)
   @UseGuards(AuthGithubGuard)
-  @ApiOkResponse({ description: 'User logged in.' })
+  @ApiOkResponse({ description: 'GitHub OAuth screen.' })
+  @ApiMovedPermanentlyResponse({ description: 'User logged in.' })
   getGithubLogin() {
     return 'OK';
   }

@@ -1,16 +1,14 @@
-import React from 'react';
-import Header from './components/Header/Header';
-import Plot from './components/Plot/Plot';
-import SwitchMode from './components/SwitchMode/SwitchMode';
+import * as dotenv from 'dotenv';
 
-const App = () => {
-  return (
-    <div className="App">
-      <Header />
-      <Plot />
-      <SwitchMode />
-    </div>
-  );
+import React, { FC } from 'react';
+import { Container } from '@mui/material';
+
+const environment = process.env.NODE_ENV;
+const envFilePath = !environment ? '.env' : `.env.${environment}`;
+dotenv.config({ path: envFilePath });
+
+const App: FC<{}> = () => {
+  return <Container className="App"></Container>;
 };
 
 export default App;
