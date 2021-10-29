@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import {
   ApiCookieAuth,
   ApiForbiddenResponse,
@@ -12,12 +12,19 @@ import { RecordingsService } from '../services/recordings.service';
 export class RecordingsController {
   constructor(private readonly recordingsService: RecordingsService) {}
 
-  @Get('/')
+  @Get(':path(*)')
   @UseGuards(AuthSessionGuard)
   @ApiCookieAuth()
-  @ApiOkResponse({ description: 'List of user recordings.' })
+  @ApiOkResponse({
+    description:
+      'List of user recordings or the contents of a recording specified.',
+  })
   @ApiForbiddenResponse({ description: 'No user logon.' })
-  async getAll(@Req() req: Request) {
-    return this.recordingsService.listUserRecordings(req.user['username']);
+  async getAll(@Req() req: Request, @Param('path') path: string) {
+    path ??= '';
+
+    return path.endsWith('/') || path === ''
+      ? await this.recordingsService.listRecordings(req.user['username'])
+      : await this.recordingsService.getRecording(req.user['username'], path);
   }
 }
