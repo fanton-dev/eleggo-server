@@ -40,4 +40,18 @@ export class RecordingsService {
 
     return JSON.parse(queryResponse.Body.toString());
   }
+
+  async saveRecording(path: string, body: any[]) {
+    if (path.endsWith('/')) {
+      throw new RecordingsError(RecordingsErrorCode.INVALID_FILE_PATH);
+    }
+
+    await this.s3
+      .upload({
+        Bucket: configObject.aws.codeSnippetsS3Bucket,
+        Key: path,
+        Body: body,
+      })
+      .promise();
+  }
 }
