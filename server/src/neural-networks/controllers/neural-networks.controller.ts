@@ -19,7 +19,7 @@ import { NeuralNetworksService } from '../service/neural-networks.service';
 export class NeuralNetworksController {
   constructor(private readonly neuralNetworksService: NeuralNetworksService) {}
 
-  @Get('/')
+  @Get('/models/')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     description: 'List of neural network models on the server.',
@@ -29,32 +29,37 @@ export class NeuralNetworksController {
     return await this.neuralNetworksService.listModels();
   }
 
-  @Get(':path(*)')
+  @Get('/models/:path(*)')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
-    description: 'Neural network model or its metadata in JSON.',
+    description: 'Neural network model architecture in JSON.',
+  })
+  @ApiNotFoundResponse({ description: 'No such file or directory.' })
+  async getNetworkModel(@Res() res: Response, @Param('path') path: string) {
+    return res.json(await this.neuralNetworksService.getModel(path));
+  }
+
+  @Get('/metadata/:path(*)')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'Neural network metadata in JSON.',
+  })
+  @ApiNotFoundResponse({ description: 'No such file or directory.' })
+  async getNetworkMetadata(@Res() res: Response, @Param('path') path: string) {
+    return res.json(await this.neuralNetworksService.getModelMetadata(path));
+  }
+
+  @Get('/weights/:path(*)')
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'Neural network weights list.',
   })
   @ApiMovedPermanentlyResponse({ description: 'Model weights download.' })
-  @ApiNotFoundResponse({ description: 'No such file or directory.' })
-  async getNetwork(
-    @Res() res: Response,
-    @Param('path') path: string,
-    @Query('type') type: string,
-  ) {
-    switch (type) {
-      case 'metadata':
-        return res.json(
-          await this.neuralNetworksService.getModelMetadata(path),
+  async getNetworkWeights(@Res() res: Response, @Param('path') path: string) {
+    return path.endsWith('/')
+      ? res.json(await this.neuralNetworksService.listModelWeights(path))
+      : res.redirect(
+          await this.neuralNetworksService.getModelWeightsFile(path),
         );
-      case 'weights':
-        return path.endsWith('/')
-          ? res.json(await this.neuralNetworksService.listModelWeights(path))
-          : res.redirect(
-              await this.neuralNetworksService.getModelWeightsFile(path),
-            );
-      case 'model':
-      default:
-        return res.json(await this.neuralNetworksService.getModel(path));
-    }
   }
 }
