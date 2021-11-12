@@ -55,6 +55,7 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
   const [headsetReadingTask, setHeadsetReadingTask] = useState<
     NodeJS.Timer | undefined
   >(undefined);
+  const [lastDetection, setLastDetection] = useState('');
 
   useEffect(() => {
     if (headset) {
@@ -65,6 +66,10 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
 
           setHeadsetData(reading);
           headsetRecordingWorker.postMessage({
+            eventType: 'data',
+            headsetData,
+          });
+          headsetDetectionWorker.postMessage({
             eventType: 'data',
             headsetData,
           });
@@ -106,6 +111,9 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
     headsetDetectionWorker.postMessage({
       eventType: 'stop',
     });
+    window.api.send('toDiscordRPC', {
+      state: 'Just exploring',
+    });
   };
 
   headsetRecordingWorker.onmessage = (
@@ -120,14 +128,16 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
   ) => {
     const detection = event.data.detection;
 
-    if (!isElectron()) {
-      return;
+    // TODO: Add local runner call here
+
+    if (isElectron() && lastDetection !== detection) {
+      window.api.send('toDiscordRPC', {
+        state: 'Thinking about',
+        details: detection.toUpperCase(),
+      });
     }
 
-    window.api.send('toDiscordRPC', {
-      state: 'Thinking about',
-      details: detection.toUpperCase(),
-    });
+    setLastDetection(detection);
   };
 
   return (

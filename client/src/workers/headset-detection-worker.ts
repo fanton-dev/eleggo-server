@@ -16,7 +16,8 @@ export interface HeadsetDetectionWorkerResponse {
 }
 
 export interface NeuralNetworkMetadata {
-  labels: string[];
+  name: string;
+  outputs: string[];
 }
 
 addEventListener(
@@ -26,41 +27,44 @@ addEventListener(
 
     switch (eventType) {
       case 'data':
-        isDetecting &&
-          (previousHeadsetData = currentHeadsetData) &&
-          (currentHeadsetData = headsetData);
+        if (isDetecting) {
+          previousHeadsetData = currentHeadsetData;
+          currentHeadsetData = headsetData;
+        }
         break;
 
       case 'start':
         isDetecting = true;
         const model = await tf.loadLayersModel(
-          `${process.env.REACT_APP_API_ROOT}/neural-networks/${modelName}`,
+          `${process.env.REACT_APP_API_ROOT}/neural-networks/models/${modelName}.json`,
+          {
+            weightPathPrefix: `${process.env.REACT_APP_API_ROOT}/neural-networks/weights/${modelName}/`,
+          },
         );
         const modelMetadataResponse = await axios.get<NeuralNetworkMetadata>(
-          `${process.env.REACT_APP_API_ROOT}/neural-networks/${modelName}?metadata=true`,
+          `${process.env.REACT_APP_API_ROOT}/neural-networks/metadata/${modelName}.json`,
         );
         const modelMetadata = modelMetadataResponse.data;
-        let previousDetection: string | undefined;
 
         while (isDetecting) {
           // Ensuring the model is not iterating over stale headset data
-          if (previousHeadsetData !== currentHeadsetData) {
+          if (
+            // previousHeadsetData !== currentHeadsetData ||
+            !currentHeadsetData
+          ) {
             continue;
           }
 
           // Getting detection from neural network
-          const detectionTensor = model.predict(
-            tf.tensor2d(currentHeadsetData),
-          );
-          const detectionId = parseInt(detectionTensor.toString());
-          const detection = modelMetadata.labels[detectionId];
+          const detectionTensor: any = model.predict([
+            tf.tensor3d([currentHeadsetData]),
+          ]);
+          const detectionId: any = await detectionTensor.argMax(1).array();
+          const detection = modelMetadata.outputs[detectionId];
 
-          // Sending current detection code snippet to local runner
-          // TODO: implement this
-
-          // Notifying the main thread so the Discord RPC updates
-          previousDetection === detection && postMessage({ detection });
-          previousDetection = detection;
+          // Notifying the main thread so the Discord RPC updates and the local runner executes
+          console.log(detection);
+          postMessage({ detection });
         }
         break;
 

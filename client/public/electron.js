@@ -42,8 +42,14 @@ app.on('activate', () => {
   }
 });
 
+discordClient.updatePresence({
+  state: 'Just exploring',
+  startTimestamp: Date.now(),
+  largeImageKey: 'eleggo',
+  instance: true,
+});
+
 ipcMain.on('toDiscordRPC', (event, args) => {
-  console.log(args);
   discordClient.updatePresence({
     state: args.state,
     details: args.details,
