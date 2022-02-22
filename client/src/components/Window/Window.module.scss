@@ -1,0 +1,18 @@
+.Window {
+    height: 100%;
+
+    background-color: white;
+    border-radius: 2rem;
+    filter: drop-shadow(0 0 1rem #00000050);
+}
+
+
+.Title {
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    padding-left: 1.5rem;
+
+    background-color: #f9eef2;
+    border-radius: 2rem 2rem 0 0;
+}
