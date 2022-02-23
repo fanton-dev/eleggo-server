@@ -21,7 +21,6 @@ const CodeFileExplorer: FC<CodeFileExploreProps> = ({ setFilepath }) => {
     });
 
     setFiles(res.data);
-    console.log(files);
   };
 
   const createTree = (data: any) => {
@@ -31,7 +30,7 @@ const CodeFileExplorer: FC<CodeFileExploreProps> = ({ setFilepath }) => {
         result.push(<TreeItem nodeId={key} label={key} />);
       } else {
         result.push(
-          <TreeItem nodeId="2" label={key}>
+          <TreeItem nodeId={key} label={key}>
             {createTree(value)}
           </TreeItem>,
         );
