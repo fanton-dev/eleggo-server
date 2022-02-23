@@ -12,6 +12,7 @@ export interface HeadsetDetectionWorkerRequest {
 }
 
 export interface HeadsetDetectionWorkerResponse {
+  detectionId: number;
   detection: string;
 }
 
@@ -63,8 +64,7 @@ addEventListener(
           const detection = modelMetadata.outputs[detectionId];
 
           // Notifying the main thread so the Discord RPC updates and the local runner executes
-          console.log(detection);
-          postMessage({ detection });
+          postMessage({ detectionId, detection });
         }
         break;
 

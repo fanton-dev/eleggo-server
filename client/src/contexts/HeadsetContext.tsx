@@ -11,7 +11,7 @@ interface HeadsetContextExports {
   startRecording: () => void;
   stopRecording: () => void;
   isDetecting: boolean;
-  startDetecting: (modelName: string) => void;
+  startDetecting: (modelName: string, snippets: string[]) => void;
   stopDetecting: () => void;
 }
 
@@ -23,8 +23,8 @@ export const HeadsetContext = createContext<HeadsetContextExports>({
   startRecording: () => {},
   stopRecording: () => {},
   isDetecting: false,
-  startDetecting: (modelName) => {
-    return modelName;
+  startDetecting: (modelName, snippets) => {
+    return { modelName, snippets };
   },
   stopDetecting: () => {},
 });
@@ -56,6 +56,7 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
     NodeJS.Timer | undefined
   >(undefined);
   const [lastDetection, setLastDetection] = useState('');
+  const [codeSnippets, setCodeSnippets] = useState<string[]>([]);
 
   useEffect(() => {
     if (headset) {
@@ -98,8 +99,9 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
     });
   };
 
-  const startDetecting = (modelName: string) => {
+  const startDetecting = (modelName: string, snippets: string[]) => {
     setIsDetecting(true);
+    setCodeSnippets(snippets);
     headsetDetectionWorker.postMessage({
       eventType: 'start',
       modelName,
@@ -126,9 +128,13 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
   headsetDetectionWorker.onmessage = (
     event: MessageEvent<HeadsetDetectionWorkerResponse>,
   ) => {
-    const detection = event.data.detection;
+    const { detectionId, detection } = event.data;
 
-    // TODO: Add local runner call here
+    if (isElectron()) {
+      window.api.send('toCodeRunner', {
+        code: codeSnippets[detectionId],
+      });
+    }
 
     if (isElectron() && lastDetection !== detection) {
       window.api.send('toDiscordRPC', {

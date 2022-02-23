@@ -7,6 +7,8 @@ const path = require('path');
 const isDev = require('electron-is-dev');
 const discordClient = require('discord-rich-presence')('893155192529367110');
 
+const io = require('socket.io')(3001);
+
 let mainWindow;
 
 app.on('ready', () => {
@@ -56,5 +58,11 @@ ipcMain.on('toDiscordRPC', (event, args) => {
     startTimestamp: Date.now(),
     largeImageKey: 'eleggo',
     instance: true,
+  });
+});
+
+io.on('connection', (socket) => {
+  ipcMain.on('toCodeRunner', (event, args) => {
+    socket.send(args.code);
   });
 });

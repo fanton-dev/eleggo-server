@@ -11,7 +11,13 @@ interface DetectionOptionsProps {
 const DetectionOptions: FC<DetectionOptionsProps> = ({ model }) => {
   const { startDetecting, stopDetecting } = useContext(HeadsetContext);
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.target.checked ? startDetecting(model) : stopDetecting();
+    event.target.checked
+      ? startDetecting(model, [
+          'print("gosho")',
+          'print("losho")',
+          'print("posho")',
+        ])
+      : stopDetecting();
   };
 
   return (

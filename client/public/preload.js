@@ -5,7 +5,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('api', {
   send: (channel, data) => {
     // whitelist channels
-    let validChannels = ['toDiscordRPC'];
+    let validChannels = ['toDiscordRPC', 'toCodeRunner'];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
