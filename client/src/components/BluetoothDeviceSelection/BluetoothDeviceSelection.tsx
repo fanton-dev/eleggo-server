@@ -6,12 +6,10 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Typography,
 } from '@mui/material';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import styles from './BluetoothDeviceSelection.module.scss';
 import { Bluetooth, Refresh } from '@mui/icons-material';
-import { HeadsetContext } from '../../contexts/HeadsetContext';
 
 interface DevicesTable {
   [key: string]: BluetoothDevice;
@@ -25,7 +23,6 @@ const BluetoothDeviceSelection: FC<BluetoothDeviceSelectionProps> = (
   props: BluetoothDeviceSelectionProps,
 ) => {
   const [devices, setDevices] = useState<DevicesTable>({});
-  const { setHeadset } = useContext(HeadsetContext);
 
   const refreshDevices = async () => {
     const requestDeviceOptions = {
