@@ -2,13 +2,12 @@ import React, { FC, useContext } from 'react';
 import * as yup from 'yup';
 import 'yup-phone';
 import { Button, Container, Grid, TextField, Typography } from '@mui/material';
-import { configurationContext } from '../../contexts/ConfigurationContext';
 import { useFormik } from 'formik';
 import styles from './RegisterForm.module.scss';
 import axios from 'axios';
 
 const RegisterForm: FC<{}> = () => {
-  const apiRoot = useContext(configurationContext).api.root;
+  const apiRoot = process.env.REACT_APP_API_ROOT;
   const apiRegisterEndpoint = `${apiRoot}/auth/register`;
   const validationSchema = yup.object({
     username: yup.string().min(3).required('Username is required.'),

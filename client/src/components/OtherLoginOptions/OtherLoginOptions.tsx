@@ -5,12 +5,12 @@ import {
   PersonOutlined,
 } from '@mui/icons-material';
 import { Button, Container, Grid } from '@mui/material';
-import React, { FC, useContext } from 'react';
-import { configurationContext } from '../../contexts/ConfigurationContext';
+import React, { FC } from 'react';
+import { UserContext } from '../../contexts/UserContext';
 import styles from './OtherLoginOptions.module.scss';
 
 const OtherLoginOptions: FC<{}> = () => {
-  const apiRoot = useContext(configurationContext).api.root;
+  const apiRoot = process.env.REACT_APP_API_ROOT;
   const apiLoginEndpoint = `${apiRoot}/auth/login`;
 
   const login = (service: 'google' | 'discord' | 'github') => {

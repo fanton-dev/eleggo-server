@@ -4,11 +4,15 @@ import '@testing-library/jest-dom/extend-expect';
 import LoginForm from './LoginForm';
 
 describe('<LoginForm />', () => {
-  test('it should mount', () => {
+  beforeEach(() => {
     render(<LoginForm />);
+  });
 
+  test('it should mount', () => {
     const loginForm = screen.getByTestId('LoginForm');
 
     expect(loginForm).toBeInTheDocument();
   });
+
+  // test('', () => {});
 });

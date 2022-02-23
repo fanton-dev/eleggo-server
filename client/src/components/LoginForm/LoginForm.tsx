@@ -8,13 +8,12 @@ import {
   Typography,
 } from '@mui/material';
 import axios from 'axios';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { useFormik } from 'formik';
-import { configurationContext } from '../../contexts/ConfigurationContext';
 import styles from './LoginForm.module.scss';
 
 const LoginForm: FC<{}> = () => {
-  const apiRoot = useContext(configurationContext).api.root;
+  const apiRoot = process.env.REACT_APP_API_ROOT;
   const apiLoginEndpoint = `${apiRoot}/auth/login`;
   const validationSchema = yup.object({
     username: yup.string().required('Username is required.'),
