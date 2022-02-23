@@ -1,3 +1,23 @@
-import { createContext } from 'react';
+import { createContext, FC, useState } from 'react';
 
-export const UserContext = createContext(null);
+interface UserContextExports {
+  sessionCookie: string | undefined;
+}
+
+export const UserContext = createContext<UserContextExports>({
+  sessionCookie: undefined,
+});
+
+const UserProvider: FC<{}> = ({ children }) => {
+  const [sessionCookie, setSessionCookie] = useState<string | undefined>(
+    undefined,
+  );
+
+  return (
+    <UserContext.Provider value={{ sessionCookie }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export default UserProvider;
