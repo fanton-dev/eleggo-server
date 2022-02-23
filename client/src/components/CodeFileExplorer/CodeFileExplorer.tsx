@@ -23,15 +23,24 @@ const CodeFileExplorer: FC<CodeFileExploreProps> = ({ setFilepath }) => {
     setFiles(res.data);
   };
 
-  const createTree = (data: any) => {
+  const createTree = (data: object, directory: string) => {
     const result: JSX.Element[] = [];
     for (const [key, value] of Object.entries(data)) {
       if (value === 'file') {
-        result.push(<TreeItem nodeId={key} label={key} />);
+        result.push(
+          <TreeItem
+            key={directory + key}
+            nodeId={directory + key}
+            label={key}
+            ContentProps={{
+              onClick: () => setFilepath(directory + key),
+            }}
+          />,
+        );
       } else {
         result.push(
-          <TreeItem nodeId={key} label={key}>
-            {createTree(value)}
+          <TreeItem key={directory + key} nodeId={directory + key} label={key}>
+            {createTree(value, directory + key)}
           </TreeItem>,
         );
       }
@@ -53,7 +62,7 @@ const CodeFileExplorer: FC<CodeFileExploreProps> = ({ setFilepath }) => {
           defaultExpandIcon={<ChevronRight />}
           sx={{ overflowX: 'hidden' }}
         >
-          {createTree(files)}
+          {createTree(files, '')}
         </TreeView>
       </Window>
     </div>
