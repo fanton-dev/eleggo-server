@@ -1,0 +1,22 @@
+.NavbarIcon {
+    display: flex;
+    width: 5rem;
+    height: 5rem;
+    justify-content: center;
+    align-items: center;
+    
+    color: white;
+    background-color: white;
+    border-radius: 2rem;
+
+    -webkit-transition: 150ms -webkit-filter linear;
+    -moz-transition: 150ms -moz-filter linear;
+    -moz-transition: 150ms filter linear;
+    -ms-transition: 150ms -ms-filter linear;
+    -o-transition: 150ms -o-filter linear;
+    transition: 150ms filter linear, 150ms -webkit-filter linear;
+}
+
+.NavbarIcon:hover {
+    filter: drop-shadow(0 0 0.5rem #00000020);
+}
