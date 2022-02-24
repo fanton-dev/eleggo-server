@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import TextCodeEditor from '@uiw/react-textarea-code-editor';
 import Window from '../Window/Window';
 import styles from './CodeArea.module.scss';
@@ -12,7 +12,7 @@ const CodeArea: FC<CodeAreaProps> = ({ filepath }) => {
   const apiRoot = process.env.REACT_APP_API_ROOT;
   const apiCodeSnippetEndpoint = `${apiRoot}/code-snippets/${filepath}`;
 
-  const [code, setCode] = React.useState(
+  const [code, setCode] = useState(
     `def example:
       print("Hello Eleggo!")`,
   );

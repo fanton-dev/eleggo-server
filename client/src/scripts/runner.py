@@ -1,4 +1,5 @@
 import socketio
+import pyautogui
 
 sio = socketio.Client()
 
