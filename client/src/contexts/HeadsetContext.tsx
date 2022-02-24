@@ -61,20 +61,42 @@ const HeadsetProvider: FC<{}> = ({ children }) => {
   useEffect(() => {
     if (headset) {
       setHeadsetReadingTask(
-        setInterval(async () => {
+        setTimeout(async () => {
           // TODO: replace with actual headset data reading
-          const reading = Array(8).fill(Array(60).fill(headsetData[0][0] + 1));
+          // const reading = Array(8).fill(Array(60).fill(headsetData[0][0] + 1));
 
-          setHeadsetData(reading);
-          headsetRecordingWorker.postMessage({
-            eventType: 'data',
-            headsetData,
-          });
-          headsetDetectionWorker.postMessage({
-            eventType: 'data',
-            headsetData,
-          });
-        }, 8),
+          // setHeadsetData(reading);
+          // headsetRecordingWorker.postMessage({
+          //   eventType: 'data',
+          //   headsetData,
+          // });
+          // headsetDetectionWorker.postMessage({
+          //   eventType: 'data',
+          //   headsetData,
+          // });
+
+          const ws = new WebSocket('ws://192.168.0.108:6969/ws');
+
+          ws.onopen = () => {
+            console.log('connected');
+          };
+
+          // THE RESULT OF THE ADC READ BY THE ESP
+          ws.onmessage = (evnt) => {
+            evnt.data.arrayBuffer().then((arrBuff: any) => {
+              console.log(arrBuff);
+              const reading = Array(8);
+              const dv = new DataView(arrBuff);
+              for (let i = 0; i < 8; ++i) {
+                reading[i] =
+                  (dv.getUint8(3 * i) << 16) |
+                  (dv.getUint8(3 * i + 1) << 8) |
+                  dv.getUint8(3 * i + 2);
+              }
+              console.log(reading);
+            });
+          };
+        }, 300),
       );
     } else {
       stopRecording();
